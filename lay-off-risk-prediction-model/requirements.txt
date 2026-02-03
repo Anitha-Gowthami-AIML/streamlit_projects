@@ -1,0 +1,11 @@
+streamlit==1.53.1
+pandas
+numpy
+matplotlib
+scikit-learn
+scipy
+altair
+pyarrow
+requests
+Pillow
+GitPython
