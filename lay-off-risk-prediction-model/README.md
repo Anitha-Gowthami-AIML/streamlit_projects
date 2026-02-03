@@ -15,7 +15,7 @@ https://lay-off-risk-prediction-model-dark-ui.streamlit.app
 
 ## 🖼️ Application Preview
 
-![Layoff Risk Prediction UI](Screenshot 2026-02-03 165735.png)
+![Layoff Risk Prediction UI](preview.png)
 
 ---
 
@@ -85,11 +85,13 @@ This makes the app accessible to **non-technical users**.
 ## 📂 Project Structure
 
 ```text
-├── app.py / new_app_UI.py
+├── app_final.py
 ├── layoff_model.pkl
 ├── scaler.pkl
 ├── feature_names.pkl
+├── model_code.ipynb
+├── synthetic_dataset_creation.ipynb
 ├── requirements.txt
 ├── runtime.txt
 ├── README.md
-└── Screenshot 2026-02-03 165735.png
+└── preview.png
