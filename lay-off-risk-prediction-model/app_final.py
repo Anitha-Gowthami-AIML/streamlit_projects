@@ -70,6 +70,7 @@ st.markdown("""
     color: white;
     font-size: 34px;
     font-weight: 700;
+    margin-top: 40px;
 }
 .sidebar-box {
     background: linear-gradient(180deg, #7b0000, #400000);
@@ -86,22 +87,31 @@ st.markdown("""
 .section-title {
     font-size: 22px;
     font-weight: 600;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 .stButton > button {
     background: linear-gradient(90deg, #7b0000, #b30000);
     color: white;
-    font-size: 18px;
-    height: 52px;
+    font-size: 50px;
+    height: 62px;
     width: 220px;
     border-radius: 10px;
 }
 .result-box {
-    margin-top: 25px;
+    /* Removed margin-top to allow for better horizontal alignment with button */
     padding: 18px;
     border-radius: 5px;
     font-size: 18px;
     font-weight: 600;
-    text-align: center;
+    height: 52px; /* Match button height */
+    width: 220px; /* Match button width */
+    display: flex; /* Use flexbox for centering content */
+    align-items: center; /* Vertically center */
+    justify-content: center; /* Horizontally center */
+    text-align: center; /* Fallback and for multiline text within flex item */
 }
 .low-risk { background-color: #e6fff1; color: #006b3c; }
 .high-risk { background-color: #ffe6e6; color: #8b0000; }
@@ -150,7 +160,6 @@ with left_col:
 
 # ================= MAIN FORM =================
 with right_col:
-    st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<div class="section-title">🧑‍💼 Employee Details</div>', unsafe_allow_html=True)
 
     c1, c2 = st.columns(2)
@@ -180,7 +189,17 @@ with right_col:
         company_size_label = st.selectbox("Company Size", list(COMPANY_SIZE_MAP.keys()))
         salary_band_label = st.selectbox("Salary Band", list(SALARY_BAND_MAP.keys()))
 
-    if st.button("🔮 Predict Layoff Risk"):
+    # Use columns to position the button and result side-by-side and shifted right
+    col_spacing_left, col_btn, col_res, col_spacing_right = st.columns([0.7, 0.5, 0.5, 0.8]) # Adjusted ratio for shifting right
+
+    with col_btn:
+        predict_button = st.button("🔮 Predict Layoff Risk")
+
+    # Placeholder for the result, placed in the right column next to the button
+    with col_res:
+        result_placeholder = st.empty()
+
+    if predict_button:
         input_df = pd.DataFrame([[
             experience,
             PRIMARY_SKILL_MAP[primary_skill_label],
@@ -199,14 +218,14 @@ with right_col:
         prob = model.predict_proba(scaled_input).max()
 
         if pred == 1:
-            st.markdown(
-                f'<div class="result-box high-risk">⚠️ High Layoff Risk<br>Confidence: {prob:.2f}</div>',
-                unsafe_allow_html=True
-            )
+            with result_placeholder: # Write into the placeholder in the right column
+                st.markdown(
+                    f'<div class="result-box high-risk">⚠️ High Layoff Risk<br>Confidence: {prob:.2f}</div>',
+                    unsafe_allow_html=True
+                )
         else:
-            st.markdown(
-                f'<div class="result-box low-risk">✅ Low Layoff Risk<br>Confidence: {prob:.2f}</div>',
-                unsafe_allow_html=True
-            )
-
-    st.markdown('</div>', unsafe_allow_html=True)
+            with result_placeholder: # Write into the placeholder in the right column
+                st.markdown(
+                    f'<div class="result-box low-risk">✅ Low Layoff Risk<br>Confidence: {prob:.2f}</div>',
+                    unsafe_allow_html=True
+                )
