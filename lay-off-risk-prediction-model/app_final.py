@@ -64,19 +64,20 @@ st.markdown("""
 <style>
 .block-container { padding: 0rem; }
 .header {
-    background: linear-gradient(90deg, #7b0000, #b30000);
+    background: linear-gradient(90deg, #a6e9cd, #d7f5e9);
+            
     padding: 25px;
     text-align: center;
-    color: white;
+    color: black;
     font-size: 34px;
     font-weight: 700;
     margin-top: 40px;
 }
 .sidebar-box {
-    background: linear-gradient(180deg, #7b0000, #400000);
+    background: linear-gradient(180deg, #a6e9cd, #d7f5e9);
     height: 100vh;
     padding: 25px;
-    color: white;
+    color: black;
 }
 .card {
     background-color: #ffffff;
@@ -101,20 +102,21 @@ st.markdown("""
     border-radius: 10px;
 }
 .result-box {
-    /* Removed margin-top to allow for better horizontal alignment with button */
     padding: 18px;
-    border-radius: 5px;
+    border-radius: 8px;
     font-size: 18px;
     font-weight: 600;
-    height: 52px; /* Match button height */
-    width: 220px; /* Match button width */
-    display: flex; /* Use flexbox for centering content */
-    align-items: center; /* Vertically center */
-    justify-content: center; /* Horizontally center */
-    text-align: center; /* Fallback and for multiline text within flex item */
+    height: 52px;
+    width: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 2px solid #b30000;
+    box-shadow: 0 2px 8px rgba(179,0,0,0.08);
 }
 .low-risk { background-color: #e6fff1; color: #006b3c; }
-.high-risk { background-color: #ffe6e6; color: #8b0000; }
+.high-risk { background: linear-gradient(90deg, #ffb3b3, #ff6666); color: #fff; border: 2px solid #8b0000; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -126,7 +128,7 @@ st.markdown('<div class="header">📉 Layoff Risk Prediction System</div>', unsa
 # ======================================================
 # LAYOUT
 # ======================================================
-left_col, right_col = st.columns([1.2, 3.8])
+left_col, right_col = st.columns([1.2, 5.0])
 
 # ================= SIDEBAR =================
 with left_col:
@@ -172,6 +174,9 @@ with right_col:
         industry_label = st.selectbox("Industry", list(INDUSTRY_MAP.keys()))
 
     with c2:
+        role_demand_label = st.selectbox("Role Demand", list(ROLE_DEMAND_MAP.keys()))
+        company_size_label = st.selectbox("Company Size", list(COMPANY_SIZE_MAP.keys()))
+        salary_band_label = st.selectbox("Salary Band", list(SALARY_BAND_MAP.keys()))
         skill_demand = st.slider("Skill Demand (1–10)", 1, 10, 5)
         industry_layoff_risk = st.slider("Industry Layoff Risk", 0.0, 1.0, 0.3)
 
@@ -185,18 +190,11 @@ with right_col:
         else:
             st.error("🔴 High layoffs reported in this industry")
 
-        role_demand_label = st.selectbox("Role Demand", list(ROLE_DEMAND_MAP.keys()))
-        company_size_label = st.selectbox("Company Size", list(COMPANY_SIZE_MAP.keys()))
-        salary_band_label = st.selectbox("Salary Band", list(SALARY_BAND_MAP.keys()))
-
-    # Use columns to position the button and result side-by-side and shifted right
-    col_spacing_left, col_btn, col_res, col_spacing_right = st.columns([0.7, 0.5, 0.5, 0.8]) # Adjusted ratio for shifting right
-
-    with col_btn:
+    st.markdown("<br>", unsafe_allow_html=True)  # Add space before button/result row
+    btn_col, res_col = st.columns([1,1])
+    with btn_col:
         predict_button = st.button("🔮 Predict Layoff Risk")
-
-    # Placeholder for the result, placed in the right column next to the button
-    with col_res:
+    with res_col:
         result_placeholder = st.empty()
 
     if predict_button:
@@ -218,14 +216,12 @@ with right_col:
         prob = model.predict_proba(scaled_input).max()
 
         if pred == 1:
-            with result_placeholder: # Write into the placeholder in the right column
-                st.markdown(
-                    f'<div class="result-box high-risk">⚠️ High Layoff Risk<br>Confidence: {prob:.2f}</div>',
-                    unsafe_allow_html=True
-                )
+            result_placeholder.markdown(
+                f'<div class="result-box high-risk">⚠️ High Layoff Risk<br>Confidence: {prob:.2f}</div>',
+                unsafe_allow_html=True
+            )
         else:
-            with result_placeholder: # Write into the placeholder in the right column
-                st.markdown(
-                    f'<div class="result-box low-risk">✅ Low Layoff Risk<br>Confidence: {prob:.2f}</div>',
-                    unsafe_allow_html=True
-                )
+            result_placeholder.markdown(
+                f'<div class="result-box low-risk">✅ Low Layoff Risk<br>Confidence: {prob:.2f}</div>',
+                unsafe_allow_html=True
+            )
