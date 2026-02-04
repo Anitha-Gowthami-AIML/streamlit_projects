@@ -128,7 +128,7 @@ st.markdown('<div class="header">📉 Layoff Risk Prediction System</div>', unsa
 # ======================================================
 # LAYOUT
 # ======================================================
-left_col, right_col = st.columns([1.2, 5.0])
+left_col, right_col = st.columns([1.2, 5.5])
 
 # ================= SIDEBAR =================
 with left_col:
