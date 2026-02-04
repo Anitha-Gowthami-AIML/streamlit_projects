@@ -9,7 +9,7 @@ The app converts **business-friendly inputs** into ML-ready features behind the 
 ## 🌐 Live Demo
 
 🔗 **Streamlit App:**  
-https://lay-off-risk-prediction-model-dark-ui.streamlit.app
+https://lay-off-risk-prediction-model-tl.streamlit.app/
 
 ---
 
