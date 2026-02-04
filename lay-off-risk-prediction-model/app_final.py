@@ -65,7 +65,6 @@ st.markdown("""
 .block-container { padding: 0rem; }
 .header {
     background: linear-gradient(90deg, #a6e9cd, #d7f5e9);
-            
     padding: 25px;
     text-align: center;
     color: black;
@@ -78,6 +77,12 @@ st.markdown("""
     height: 100vh;
     padding: 25px;
     color: black;
+}
+.sidebar-box h2 {
+    font-size: 22px !important;
+    font-weight: 600;
+    white-space: nowrap;
+    margin-bottom: 18px;
 }
 .card {
     background-color: #ffffff;
