@@ -64,7 +64,7 @@ st.markdown("""
 <style>
 .block-container { padding: 0rem; }
 .header {
-    background: linear-gradient(90deg, #7b0000, #b30000);
+    background: linear-gradient(90deg, #a6e9cd, #d7f5e9);
     padding: 25px;
     text-align: center;
     color: white;
@@ -73,7 +73,7 @@ st.markdown("""
     margin-top: 40px;
 }
 .sidebar-box {
-    background: linear-gradient(180deg, #7b0000, #b30000);
+    background: linear-gradient(180deg, #a6e9cd, #d7f5e9);
     height: 100vh;
     padding: 25px;
     color: white;
