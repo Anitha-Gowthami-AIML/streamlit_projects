@@ -67,7 +67,7 @@ st.markdown("""
     background: linear-gradient(90deg, #7b0000, #b30000);
     padding: 25px;
     text-align: center;
-    color: black;
+    color: white;
     font-size: 34px;
     font-weight: 700;
     margin-top: 40px;
@@ -76,7 +76,7 @@ st.markdown("""
     background: linear-gradient(180deg, #7b0000, #b30000);
     height: 100vh;
     padding: 25px;
-    color: black;
+    color: white;
 }
 .sidebar-box h2 {
     font-size: 22px !important;
