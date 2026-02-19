@@ -46,9 +46,18 @@ div[data-testid="metric-container"] {
 # =====================================================
 # LOAD DATA
 # =====================================================
+import os
+
+
+
+#================================================
 @st.cache_data
 def load_data():
-    df = pd.read_csv("Shark_Tank_India_input_file.csv")
+    BASE_DIR = os.path.dirname(__file__)
+    csv_path = os.path.join(BASE_DIR, "Shark_Tank_India_input_file.csv")
+    df = pd.read_csv(csv_path)
+
+    #df = pd.read_csv("Shark_Tank_India_input_file.csv")
     df = df.drop_duplicates()
     df['deal'] = df['total_sharks_invested'] > 0
     df['equity_per_shark'] = (
@@ -287,3 +296,4 @@ elif page == "📚 Participation & Category Insights":
     ax2.bar(valuation_counts.index, valuation_counts.values)
     ax2.set_xticklabels(valuation_counts.index, rotation=45)
     st.pyplot(fig2)
+
