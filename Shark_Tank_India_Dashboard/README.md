@@ -11,7 +11,7 @@ It allows users to explore Shark participation, investment trends, valuation pat
 
 You can access the live Streamlit app here:
 
-[**Open Shark Tank India Dashboard**](https://share.streamlit.io/your-username/your-repo/main/app.py)
+[**Open Shark Tank India Dashboard**]([https://share.streamlit.io/your-username/your-repo/main/app.py](https://appprojects-pvtwjd4skbymvp6v7qciea.streamlit.app/)
 
 ---
 
