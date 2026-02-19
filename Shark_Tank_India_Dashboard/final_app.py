@@ -26,7 +26,9 @@ st.markdown("""
     text-align: center;
     font-size: 30px;
     font-weight: bold;
-    margin-bottom: 20px;
+    #margin-bottom: 20px;
+    margin: 0 auto 20px auto;  /* centers the box horizontally */
+    width: 70%;               /* change this to your desired width */
 }
 .section-title {
     font-size: 22px;
@@ -318,6 +320,7 @@ elif page == "📚  Category Insights":
     ax2.bar(valuation_counts.index, valuation_counts.values)
     ax2.set_xticklabels(valuation_counts.index, rotation=45)
     st.pyplot(fig2)
+
 
 
 
