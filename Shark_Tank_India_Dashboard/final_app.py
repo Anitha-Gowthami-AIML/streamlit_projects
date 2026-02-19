@@ -82,11 +82,11 @@ if os.path.exists(sidebar_img_path):
 #   st.sidebar.image("all_sharks.jpg")
 
 page = st.sidebar.radio("Navigation", [
-    "🏠 Opening Page",
+    "🏠 Home",
     "📊 Executive Overview",
     "🦈 Shark Analysis",
     "📈 Advanced Insights",
-    "📚 Participation & Category Insights"
+    "📚  Category Insights"
 ])
 
 # =====================================================
@@ -122,9 +122,9 @@ def add_logo():
 add_logo()
 
 # =====================================================
-# OPENING PAGE
+# Home
 # =====================================================
-if page == "🏠 Opening Page":
+if page == "🏠 Home":
 
     st.markdown('<div class="main-header">🦈 Shark Tank India Analytics Dashboard</div>', unsafe_allow_html=True)
 
@@ -295,11 +295,11 @@ elif page == "📈 Advanced Insights":
         st.write("No such cases found.")
 
 # =====================================================
-# PARTICIPATION & CATEGORY INSIGHTS
+#  Category Insights
 # =====================================================
-elif page == "📚 Participation & Category Insights":
+elif page == "📚  Category Insights":
 
-    st.markdown('<div class="main-header">📚 Participation & Category Insights</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-header">📚  Category Insights</div>', unsafe_allow_html=True)
 
     st.subheader("Mega Big Category Distribution")
 
@@ -318,5 +318,6 @@ elif page == "📚 Participation & Category Insights":
     ax2.bar(valuation_counts.index, valuation_counts.values)
     ax2.set_xticklabels(valuation_counts.index, rotation=45)
     st.pyplot(fig2)
+
 
 
