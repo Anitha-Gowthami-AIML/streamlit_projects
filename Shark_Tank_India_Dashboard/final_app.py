@@ -71,8 +71,15 @@ successful = df[df['deal'] == True]
 # =====================================================
 # SIDEBAR IMAGE
 # =====================================================
-if os.path.exists("all_sharks.jpg"):
-    st.sidebar.image("all_sharks.jpg")
+import os
+
+BASE_DIR = os.path.dirname(__file__)
+sidebar_img_path = os.path.join(BASE_DIR, "all_sharks.jpg")
+if os.path.exists(sidebar_img_path):
+    st.sidebar.image(sidebar_img_path)
+
+#if os.path.exists("all_sharks.jpg"):
+#   st.sidebar.image("all_sharks.jpg")
 
 page = st.sidebar.radio("Navigation", [
     "🏠 Opening Page",
@@ -86,8 +93,12 @@ page = st.sidebar.radio("Navigation", [
 # TOP RIGHT LOGO
 # =====================================================
 def add_logo():
-    if os.path.exists("shark_tank_logo.png"):
-        with open("shark_tank_logo.png", "rb") as f:
+    logo_path = os.path.join(BASE_DIR, "shark_tank_logo.png")
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+        
+    #if os.path.exists("shark_tank_logo.png"):
+     #   with open("shark_tank_logo.png", "rb") as f:
             encoded = base64.b64encode(f.read()).decode()
 
         st.markdown(f"""
@@ -190,16 +201,27 @@ elif page == "🦈 Shark Analysis":
         avg_deal = total_inv / total_deals if total_deals > 0 else 0
 
         col1, col2 = st.columns([1, 2])
-
+#==========================================
         shark_images = {
-            "aman": "Aman Gupta.png",
-            "anupam": "Anupam Mittal.png",
-            "ashneer": "Ashneer Grover.png",
-            "namita": "Namita Thapar.png",
-            "peyush": "Peyush Bansal.png",
-            "vineeta": "Vineeta Singh.png",
-            "ghazal": "Ghazal Alagh.png"
+            "aman": os.path.join(BASE_DIR, "Aman Gupta.png"),
+            "anupam": os.path.join(BASE_DIR, "Anupam Mittal.png"),
+            "ashneer": os.path.join(BASE_DIR, "Ashneer Grover.png"),
+            "namita": os.path.join(BASE_DIR, "Namita Thapar.png"),
+            "peyush": os.path.join(BASE_DIR, "Peyush Bansal.png"),
+            "vineeta": os.path.join(BASE_DIR, "Vineeta Singh.png"),
+            "ghazal": os.path.join(BASE_DIR, "Ghazal Alagh.png")
         }
+
+ 
+        #shark_images = {
+         #   "aman": "Aman Gupta.png",
+          #  "anupam": "Anupam Mittal.png",
+           # "ashneer": "Ashneer Grover.png",
+           # "namita": "Namita Thapar.png",
+            #"peyush": "Peyush Bansal.png",
+            #"vineeta": "Vineeta Singh.png",
+            #"ghazal": "Ghazal Alagh.png"
+        #}
 
         shark_summaries = {
             "aman": "Expert in consumer electronics, branding and digital marketing.",
@@ -296,4 +318,5 @@ elif page == "📚 Participation & Category Insights":
     ax2.bar(valuation_counts.index, valuation_counts.values)
     ax2.set_xticklabels(valuation_counts.index, rotation=45)
     st.pyplot(fig2)
+
 
