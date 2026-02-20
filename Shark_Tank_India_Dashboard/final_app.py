@@ -171,9 +171,9 @@ elif page == "📊 Executive Overview":
 
     col5, col6, col7, col8 = st.columns(4)
     col5.metric("Success Rate", f"{success_rate}%")
-    col6.metric("Total Investment (₹ Cr)", f"{total_investment:.2f}")
-    col7.metric("Average Deal (₹ Cr)", f"{avg_deal:.2f}")
-    col8.metric("Median Deal (₹ Cr)", f"{median_deal:.2f}")
+    col6.metric("Total Investment (₹ Lakhs)", f"{total_investment:.2f}")
+    col7.metric("Average Deal (₹ Lakhs)", f"{avg_deal:.2f}")
+    col8.metric("Median Deal (₹ Lakhs)", f"{median_deal:.2f}")
 
     st.metric("Average Equity % Given", f"{avg_equity:.2f}%")
 
@@ -242,8 +242,8 @@ elif page == "🦈 Shark Analysis":
 
         with col2:
             st.metric("Total Deals", int(total_deals))
-            st.metric("Total Investment (₹ Cr)", f"{total_inv:.2f}")
-            st.metric("Average Deal Size (₹ Cr)", f"{avg_deal:.2f}")
+            st.metric("Total Investment (₹ Lakhs)", f"{total_inv:.2f}")
+            st.metric("Average Deal Size (₹ Lakhs)", f"{avg_deal:.2f}")
             st.write(shark_summaries.get(selected.lower(), ""))
 
     # ------------------ TAB 2: Sharks Comparison ------------------
@@ -269,7 +269,7 @@ elif page == "🦈 Shark Analysis":
         top3_inv = shark_df.sort_values("Total Investment", ascending=False).head(3)
         fig2, ax2 = plt.subplots()
         ax2.bar(top3_inv['Shark'], top3_inv['Total Investment'], color='orange')
-        ax2.set_ylabel("Total Investment (₹ Cr)")
+        ax2.set_ylabel("Total Investment (₹ Lakhs)")
         st.pyplot(fig2)
 # =====================================================
 # ADVANCED INSIGHTS
@@ -345,4 +345,5 @@ elif page == "📚  Category Insights":
     
     
     
+
 
