@@ -301,27 +301,48 @@ elif page == "📈 Advanced Insights":
 # =====================================================
 elif page == "📚  Category Insights":
 
+    
     st.markdown('<div class="main-header">📚  Category Insights</div>', unsafe_allow_html=True)
-
+    
     st.subheader("Mega Big Category Distribution")
-
+    
     category_counts = df['Mega_Big_Category_idea'].value_counts()
-
-    fig, ax = plt.subplots()
+    
+    # Smaller figure size
+    fig, ax = plt.subplots(figsize=(6,4))   # 👈 decrease size here
+    
     ax.bar(category_counts.index, category_counts.values)
-    ax.set_xticklabels(category_counts.index, rotation=45)
+    
+    # Proper x-axis formatting
+    ax.set_xticks(range(len(category_counts.index)))
+    ax.set_xticklabels(category_counts.index, rotation=30, ha='right', fontsize=8)
+    
+    ax.tick_params(axis='y', labelsize=8)
+    ax.set_ylabel("Count", fontsize=9)
+    ax.set_xlabel("Category", fontsize=9)
+    
+    plt.tight_layout()  # 👈 prevents label cut-off
     st.pyplot(fig)
-
+    
+    
     st.subheader("Valuation Category Distribution")
-
+    
     valuation_counts = df['Valuation_category'].value_counts()
-
-    fig2, ax2 = plt.subplots()
+    
+    fig2, ax2 = plt.subplots(figsize=(6,4))  # 👈 decrease size here
+    
     ax2.bar(valuation_counts.index, valuation_counts.values)
-    ax2.set_xticklabels(valuation_counts.index, rotation=45)
+    
+    ax2.set_xticks(range(len(valuation_counts.index)))
+    ax2.set_xticklabels(valuation_counts.index, rotation=30, ha='right', fontsize=8)
+    
+    ax2.tick_params(axis='y', labelsize=8)
+    ax2.set_ylabel("Count", fontsize=9)
+    ax2.set_xlabel("Valuation Category", fontsize=9)
+    
+    plt.tight_layout()
     st.pyplot(fig2)
-
-
-
-
+    
+    
+    
 
