@@ -72,21 +72,7 @@ def set_bg(image_file):
     )
 
 
-def set_bg_url(image_url):
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("{image_url}");
-            background-size: cover;
-            background-position: center;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-set_bg_url("https://raw.githubusercontent.com/Anitha-Gowthami-AIML/streamlit_projects/main/Insurance_cost_Predictor/bg_image.png")
+set_bg("bg_image.png")
 
 # -------------------------------------------------------
 # TITLE
