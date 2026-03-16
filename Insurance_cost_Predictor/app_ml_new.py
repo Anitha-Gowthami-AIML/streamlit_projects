@@ -14,26 +14,22 @@ st.set_page_config(
     page_icon="🩺",
     layout="centered"
 )
+import streamlit as st
 
-# -------------------------------------------------------
-# BACKGROUND IMAGE
-# -------------------------------------------------------
-
-def set_bg(image_file):
-
-    with open(image_file, "rb") as f:
-        encoded = base64.b64encode(f.read()).decode()
-
+# -----------------------------
+# BACKGROUND IMAGE (from GitHub)
+# -----------------------------
+def set_bg_url(image_url):
     st.markdown(
         f"""
         <style>
-
         .stApp {{
-            background-image: url("data:image/png;base64,{encoded}");
+            background-image: url("{image_url}");
             background-size: cover;
             background-position: center;
         }}
 
+        /* Title banner styling */
         .title-box {{
             background: linear-gradient(90deg,#0284c7,#06b6d4);
             padding:18px 25px;
@@ -42,7 +38,6 @@ def set_bg(image_file):
             color:white;
             margin:20px auto 25px auto;
             box-shadow:0 6px 18px rgba(0,0,0,0.2);
-
             max-width:720px;     /* keeps banner compact */
         }}
 
@@ -58,21 +53,26 @@ def set_bg(image_file):
             opacity:0.9;
             margin:0;
         }}
-
-        .card {{
-            background: rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px);
-            padding:25px;
-            border-radius:15px;
-        }}
-
         </style>
         """,
         unsafe_allow_html=True
     )
 
+# Use your raw GitHub URL
+set_bg_url("https://raw.githubusercontent.com/Anitha-Gowthami-AIML/streamlit_projects/main/Insurance_cost_Predictor/bg_image.png")
 
-set_bg("bg_image.png")
+# -----------------------------
+# TITLE SECTION
+# -----------------------------
+st.markdown(
+"""
+<div class="title-box">
+<h1>🩺 Medical Insurance Cost Predictor</h1>
+<p>AI Powered Healthcare Cost Estimation</p>
+</div>
+""",
+unsafe_allow_html=True
+)
 
 # -------------------------------------------------------
 # TITLE
