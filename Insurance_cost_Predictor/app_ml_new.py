@@ -79,11 +79,16 @@ unsafe_allow_html=True
 # -------------------------------------------------------
 # LOAD MODEL
 # -------------------------------------------------------
-
-import pickle
-
-with open("model.pkl", "rb") as f:
-    model = pickle.load(f)
+import os
+@st.cache_resource
+def load_pipeline():
+    # Get the directory where the current script (model.py) is located
+    current_dir = os.path.dirname(__file__)
+    # Construct the full path to your pipeline file
+    pipeline_path = os.path.join(current_dir, 'model.pkl')
+    return joblib.load(pipeline_path)
+    
+model = load_pipeline()
 # -------------------------------------------------------
 # USER INPUTS
 # -------------------------------------------------------
