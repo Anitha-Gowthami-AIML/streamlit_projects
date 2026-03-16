@@ -91,8 +91,13 @@ unsafe_allow_html=True
 # -------------------------------------------------------
 # LOAD MODEL
 # -------------------------------------------------------
+import os
 
-model = joblib.load("model.pkl")
+if os.path.exists("model.pkl"):
+    model = joblib.load("model.pkl")
+else:
+    st.error("Model file not found. Please upload model.pkl to the app folder.")
+# model = joblib.load("model.pkl")
 
 # -------------------------------------------------------
 # USER INPUTS
