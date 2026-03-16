@@ -80,8 +80,10 @@ unsafe_allow_html=True
 # LOAD MODEL
 # -------------------------------------------------------
 
-model = joblib.load("model.pkl")
+import pickle
 
+with open("model.pkl", "rb") as f:
+    model = pickle.load(f)
 # -------------------------------------------------------
 # USER INPUTS
 # -------------------------------------------------------
