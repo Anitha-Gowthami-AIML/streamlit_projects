@@ -91,14 +91,27 @@ unsafe_allow_html=True
 # -------------------------------------------------------
 # LOAD MODEL
 # -------------------------------------------------------
+import pickle
+import streamlit as st
 import os
 
-if os.path.exists("model.pkl"):
-    model = joblib.load("model.pkl")
-else:
-    st.error("Model file not found. Please upload model.pkl to the app folder.")
-# model = joblib.load("model.pkl")
+# Path to your model
+model_path = "model.pkl"
 
+if os.path.exists(model_path):
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+else:
+    st.warning("Model file not found. Please upload your model file here:")
+    uploaded_file = st.file_uploader("Upload model.pkl", type=["pkl"])
+    if uploaded_file is not None:
+        with open("model.pkl", "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        with open("model.pkl", "rb") as f:
+            model = pickle.load(f)
+        st.success("Model uploaded successfully!")
+    else:
+        st.stop()  # Stop app until model is uploaded
 # -------------------------------------------------------
 # USER INPUTS
 # -------------------------------------------------------
