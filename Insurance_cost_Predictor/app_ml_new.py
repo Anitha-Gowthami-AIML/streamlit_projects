@@ -19,17 +19,15 @@ st.set_page_config(
 # BACKGROUND IMAGE
 # -------------------------------------------------------
 
-def set_bg(image_file):
-
-    with open(image_file, "rb") as f:
-        encoded = base64.b64encode(f.read()).decode()
-
+# -------------------------------------------------------
+# BACKGROUND IMAGE FROM GITHUB
+# -------------------------------------------------------
+def set_bg_url(image_url):
     st.markdown(
         f"""
         <style>
-
         .stApp {{
-            background-image: url("data:image/png;base64,{encoded}");
+            background-image: url("{image_url}");
             background-size: cover;
             background-position: center;
         }}
@@ -42,38 +40,28 @@ def set_bg(image_file):
             color:white;
             margin:20px auto 25px auto;
             box-shadow:0 6px 18px rgba(0,0,0,0.2);
-
-            max-width:720px;     /* keeps banner compact */
+            max-width:720px;
         }}
 
-        .title-box h1{{
+        .title-box h1 {{
             font-size:32px;
             font-weight:600;
             margin-bottom:5px;
-            white-space:nowrap;  /* prevents wrapping */
+            white-space:nowrap;
         }}
 
-        .title-box p{{
+        .title-box p {{
             font-size:15px;
             opacity:0.9;
             margin:0;
         }}
-
-        .card {{
-            background: rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px);
-            padding:25px;
-            border-radius:15px;
-        }}
-
         </style>
         """,
         unsafe_allow_html=True
     )
 
-
-set_bg("bg_image.png")
-
+# Call it AFTER the function definition
+set_bg_url("https://raw.githubusercontent.com/Anitha-Gowthami-AIML/streamlit_projects/main/Insurance_cost_Predictor/bg_image.png")
 # -------------------------------------------------------
 # TITLE
 # -------------------------------------------------------
