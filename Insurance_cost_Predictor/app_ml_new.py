@@ -157,8 +157,8 @@ if st.button("Predict Insurance Cost"):
     col1, col2, col3 = st.columns(3)
 
     col1.metric("Estimated Cost", f"${prediction:,.2f}")
-    col2.metric("Model", "Random Forest")
-    col3.metric("Model R² Score", "0.89")
+    col2.metric("Model", "XGBoost")
+    col3.metric("Model R² Score", "0.9")
 
     # Risk indicator
 
