@@ -85,7 +85,7 @@ def _classify_meal_type(name):
     n = name.lower()
     if any(k in n for k in BREAKFAST_KW):  return "Breakfast"
     if any(k in n for k in SNACK_KW):      return "Snack"
-    if any(k in n for k in ["soup","salad","wrap","plate","dal tadka","dal ",
+    if any(k in n for k in ["soup","salad","wrap","plate","dal tadka","dal ","rice","curry","stew","shukto",
                               "lentil","rasam","sambhar","shorba","vichyssoise",
                               "minestrone","ribollita","tom yum","onion soup"]):
         return "Lunch"
