@@ -35,37 +35,49 @@ div[data-testid="stMetric"] div[data-testid="stMetricValue"]{color:#FF9A50 !impo
 .stRadio>div{flex-direction:row !important;gap:8px;flex-wrap:wrap;}
 .stRadio label{color:rgba(245,230,216,0.70) !important;}
 
-/* ── FIX: Selectbox & Multiselect selected text color in sidebar ── */
-[data-testid="stSidebar"] [data-baseweb="select"] div,
-[data-testid="stSidebar"] [data-baseweb="select"] span,
-[data-testid="stSidebar"] [data-baseweb="select"] input,
-[data-testid="stSidebar"] [data-baseweb="select"] [class*="ValueContainer"] *,
+/* ── FIX: Selectbox input box — selected value text ── */
 [data-testid="stSidebar"] [data-baseweb="select"] [class*="singleValue"],
-[data-testid="stSidebar"] [data-baseweb="select"] [class*="placeholder"] {
-    color: #000000 !important;
+[data-testid="stSidebar"] [data-baseweb="select"] input {
+    color: #FFFFFF !important;
 }
-/* Multiselect tags (pills) */
+/* Selectbox box background */
+[data-testid="stSidebar"] [data-baseweb="select"] > div:first-child {
+    background-color: #2A1A0E !important;
+    border-color: rgba(210,100,30,0.45) !important;
+}
+/* Multiselect tag pills */
 [data-testid="stSidebar"] [data-baseweb="tag"] {
-    background: rgba(210,100,30,0.30) !important;
-    border: 1px solid rgba(210,100,30,0.55) !important;
+    background: rgba(210,100,30,0.40) !important;
+    border: 1px solid rgba(210,100,30,0.60) !important;
 }
 [data-testid="stSidebar"] [data-baseweb="tag"] span {
-    color: #000000 !important;
+    color: #FFFFFF !important;
+    font-weight: 500 !important;
 }
-/* Dropdown menu options */
-[data-baseweb="popover"] ul li,
-[data-baseweb="menu"] ul li,
+/* ── Dropdown list panel ── */
+[data-baseweb="popover"],
+[data-baseweb="menu"] {
+    background-color: #2A1A0E !important;
+}
+/* Every option row */
 [data-baseweb="popover"] [role="option"],
 [data-baseweb="menu"] [role="option"] {
-    color: #000000 !important;
-    background: #1C0F06 !important;
+    background-color: #2A1A0E !important;
+    color: #F5E6D8 !important;
+    font-size: 0.88rem !important;
 }
+/* Hover state */
 [data-baseweb="popover"] [role="option"]:hover,
-[data-baseweb="menu"] [role="option"]:hover,
+[data-baseweb="menu"] [role="option"]:hover {
+    background-color: rgba(210,100,30,0.35) !important;
+    color: #FFD4A0 !important;
+}
+/* Currently selected/highlighted option */
 [data-baseweb="popover"] [aria-selected="true"],
 [data-baseweb="menu"] [aria-selected="true"] {
-    background: rgba(210,100,30,0.30) !important;
-    color: #000000 !important;
+    background-color: rgba(210,100,30,0.50) !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
 }
 </style>
 """, unsafe_allow_html=True)
