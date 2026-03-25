@@ -42,7 +42,7 @@ div[data-testid="stMetric"] div[data-testid="stMetricValue"]{color:#FF9A50 !impo
 [data-testid="stSidebar"] [data-baseweb="select"] [class*="ValueContainer"] *,
 [data-testid="stSidebar"] [data-baseweb="select"] [class*="singleValue"],
 [data-testid="stSidebar"] [data-baseweb="select"] [class*="placeholder"] {
-    color: #FFB878 !important;
+    color: #000000 !important;
 }
 /* Multiselect tags (pills) */
 [data-testid="stSidebar"] [data-baseweb="tag"] {
@@ -50,14 +50,14 @@ div[data-testid="stMetric"] div[data-testid="stMetricValue"]{color:#FF9A50 !impo
     border: 1px solid rgba(210,100,30,0.55) !important;
 }
 [data-testid="stSidebar"] [data-baseweb="tag"] span {
-    color: #FFD4A0 !important;
+    color: #000000 !important;
 }
 /* Dropdown menu options */
 [data-baseweb="popover"] ul li,
 [data-baseweb="menu"] ul li,
 [data-baseweb="popover"] [role="option"],
 [data-baseweb="menu"] [role="option"] {
-    color: #F5E6D8 !important;
+    color: #000000 !important;
     background: #1C0F06 !important;
 }
 [data-baseweb="popover"] [role="option"]:hover,
@@ -65,7 +65,7 @@ div[data-testid="stMetric"] div[data-testid="stMetricValue"]{color:#FF9A50 !impo
 [data-baseweb="popover"] [aria-selected="true"],
 [data-baseweb="menu"] [aria-selected="true"] {
     background: rgba(210,100,30,0.30) !important;
-    color: #FFB878 !important;
+    color: #000000 !important;
 }
 </style>
 """, unsafe_allow_html=True)
