@@ -34,6 +34,39 @@ div[data-testid="stMetric"] div[data-testid="stMetricValue"]{color:#FF9A50 !impo
 .stTabs [aria-selected="true"]{background:rgba(210,100,30,0.28) !important;color:#FFB878 !important;}
 .stRadio>div{flex-direction:row !important;gap:8px;flex-wrap:wrap;}
 .stRadio label{color:rgba(245,230,216,0.70) !important;}
+
+/* ── FIX: Selectbox & Multiselect selected text color in sidebar ── */
+[data-testid="stSidebar"] [data-baseweb="select"] div,
+[data-testid="stSidebar"] [data-baseweb="select"] span,
+[data-testid="stSidebar"] [data-baseweb="select"] input,
+[data-testid="stSidebar"] [data-baseweb="select"] [class*="ValueContainer"] *,
+[data-testid="stSidebar"] [data-baseweb="select"] [class*="singleValue"],
+[data-testid="stSidebar"] [data-baseweb="select"] [class*="placeholder"] {
+    color: #FFB878 !important;
+}
+/* Multiselect tags (pills) */
+[data-testid="stSidebar"] [data-baseweb="tag"] {
+    background: rgba(210,100,30,0.30) !important;
+    border: 1px solid rgba(210,100,30,0.55) !important;
+}
+[data-testid="stSidebar"] [data-baseweb="tag"] span {
+    color: #FFD4A0 !important;
+}
+/* Dropdown menu options */
+[data-baseweb="popover"] ul li,
+[data-baseweb="menu"] ul li,
+[data-baseweb="popover"] [role="option"],
+[data-baseweb="menu"] [role="option"] {
+    color: #F5E6D8 !important;
+    background: #1C0F06 !important;
+}
+[data-baseweb="popover"] [role="option"]:hover,
+[data-baseweb="menu"] [role="option"]:hover,
+[data-baseweb="popover"] [aria-selected="true"],
+[data-baseweb="menu"] [aria-selected="true"] {
+    background: rgba(210,100,30,0.30) !important;
+    color: #FFB878 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
