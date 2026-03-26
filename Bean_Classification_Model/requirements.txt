@@ -1,4 +1,7 @@
-streamlit==1.41.0
-numpy==1.26.4
-Pillow==10.4.0
+#streamlit==1.41.0
+#numpy==1.26.4
+#Pillow==10.4.0
 #gTTS==2.5.3
+streamlit
+numpy
+Pillow
