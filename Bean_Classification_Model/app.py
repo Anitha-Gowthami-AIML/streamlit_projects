@@ -2,16 +2,7 @@ import streamlit as st
 import numpy as np
 import base64
 import os
-import io
-import re
 from pathlib import Path
-
-# gTTS: generates clear female British-English voice audio in-memory
-try:
-    from gtts import gTTS
-    TTS_AVAILABLE = True
-except ImportError:
-    TTS_AVAILABLE = False
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE CONFIG
@@ -776,141 +767,6 @@ def predict_bean(f: dict) -> tuple:
     conf = min(0.58 + (scores[best] / total) * 0.38, 0.98)
     return best, round(conf, 3)
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# AUDIO NARRATION — gTTS Female Voice (en-GB lang='en', tld='co.uk')
-# ─────────────────────────────────────────────────────────────────────────────
-def clean_markdown(text: str) -> str:
-    """Strip markdown bold/italic markers for clean TTS pronunciation."""
-    text = re.sub(r"\*{1,2}(.*?)\*{1,2}", r"\1", text)
-    text = re.sub(r"_{1,2}(.*?)_{1,2}", r"\1", text)
-    return text
-
-def build_narration(pred_class: str, confidence: float, user_vals: dict) -> str:
-    """Build a natural-sounding demo narration: description + feature walkthrough."""
-    info = BEAN_DATA[pred_class]
-    conf_pct = int(confidence * 100)
-    desc = clean_markdown(info["description"]).replace("\n\n", ". ").strip()
-
-    area      = user_vals["Area"]
-    perim     = user_vals["Perimeter"]
-    major     = user_vals["MajorAxisLength"]
-    minor     = user_vals["MinorAxisLength"]
-    aspect    = user_vals["AspectRation"]
-    ecc       = user_vals["Eccentricity"]
-    rnd       = user_vals["roundness"]
-    cmp       = user_vals["Compactness"]
-    sf3       = user_vals["ShapeFactor3"]
-    solid     = user_vals["Solidity"]
-    equiv     = user_vals["EquivDiameter"]
-
-    # Describe aspect ratio naturalistically
-    if aspect < 1.3:
-        shape_desc = "very round and nearly circular"
-    elif aspect < 1.6:
-        shape_desc = "slightly oval in shape"
-    elif aspect < 1.9:
-        shape_desc = "noticeably elongated"
-    else:
-        shape_desc = "highly elongated and narrow"
-
-    # Describe roundness
-    if rnd > 0.90:
-        round_desc = "extremely round"
-    elif rnd > 0.80:
-        round_desc = "fairly round"
-    elif rnd > 0.70:
-        round_desc = "moderately round"
-    else:
-        round_desc = "not very round — more oblong"
-
-    # SF3 interpretation
-    if sf3 > 0.85:
-        sf3_desc = "very high, indicating strong compactness"
-    elif sf3 > 0.75:
-        sf3_desc = "above average, suggesting moderate compactness"
-    else:
-        sf3_desc = "relatively low, indicating an elongated or irregular form"
-
-    narration = f"""Hello! Welcome to the Dry Bean Classifier demo.
-
-I have analysed the 16 morphological measurements you entered, and the Support Vector Machine model has made a prediction.
-
-The predicted bean variety is {pred_class}. {info["tagline"]}. The model is {conf_pct} percent confident in this classification.
-
-Let me now describe this bean variety for you.
-
-{desc}
-
-This variety originates from {info["origin"]}, and is commonly used in {info["culinary"]}. It contains approximately {info["protein"]} of protein per 100 grams when dry.
-
-Now let me walk you through the key input features and explain what they tell us about this bean.
-
-Starting with size. The area of the bean is {int(area):,} pixels squared. This measures the total surface within the bean boundary as captured by the camera. The perimeter is {int(perim):,} pixels — that is the total length of the outer edge of the bean. The major axis, which is the longest line through the bean, measures {int(major):,} pixels, while the minor axis measures {int(minor):,} pixels.
-
-Moving on to shape. The aspect ratio is {aspect:.2f}, which means this bean is {shape_desc}. The eccentricity is {ecc:.3f} — where zero represents a perfect circle and one represents a flat line — confirming the bean's form. The equivalent diameter, which is the diameter of a circle with the same area as this bean, is {int(equiv):,} pixels.
-
-Now for the most important features. The roundness score is {rnd:.3f}, meaning this bean is {round_desc}. Roundness is calculated as four pi times the area, divided by the perimeter squared. The compactness is {cmp:.3f}, measuring how efficiently the bean fills its major axis length.
-
-The single most predictive feature in our model is Shape Factor 3, which has a value of {sf3:.3f}. This is {sf3_desc}. Shape Factor 3 had the highest importance score of 0.112 in the Random Forest feature analysis, making it the top discriminator between bean classes. The solidity is {solid:.3f}, confirming that the bean's surface is {("very smooth and convex" if solid > 0.985 else "slightly irregular along the edges")}.
-
-Together, these measurements create a complete geometric fingerprint of the bean, allowing the model to identify it as {pred_class} with {conf_pct} percent confidence.
-
-Thank you for using the Dry Bean Classifier. I hope this walkthrough helped you understand how machine learning uses shape and size features to automatically classify agricultural products."""
-
-    return narration.strip()
-
-
-def generate_audio_b64(text: str) -> str | None:
-    """Generate gTTS audio and return base64-encoded MP3 string, or None on failure."""
-    if not TTS_AVAILABLE:
-        return None
-    try:
-        tts = gTTS(text=text, lang="en", tld="co.uk", slow=False)
-        buf = io.BytesIO()
-        tts.write_to_fp(buf)
-        buf.seek(0)
-        return base64.b64encode(buf.read()).decode()
-    except Exception:
-        return None
-
-
-def render_audio_player(audio_b64: str, bean_name: str, color: str):
-    """Render a styled HTML5 audio player with the narration."""
-    st.markdown(f"""
-    <div style="
-        background: linear-gradient(135deg, rgba(10,35,10,0.92), rgba(20,55,15,0.88));
-        border: 1px solid {color}44;
-        border-radius: 16px;
-        padding: 20px 22px 16px;
-        margin: 16px 0;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-    ">
-        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-            <span style="font-size:1.4rem;">🔊</span>
-            <div>
-                <div style="font-family:'Cormorant Garamond',serif; font-size:1.05rem;
-                            color:{color}; font-weight:600; line-height:1.1;">
-                    Voice Narration
-                </div>
-                <div style="font-family:'Outfit',sans-serif; font-size:0.72rem; color:#4a8050;
-                            margin-top:1px;">
-                    {bean_name} · Description + Feature Walkthrough · Female Voice
-                </div>
-            </div>
-        </div>
-        <audio controls style="width:100%; border-radius:8px; accent-color:{color};"
-               preload="metadata">
-            <source src="data:audio/mp3;base64,{audio_b64}" type="audio/mpeg">
-        </audio>
-        <div style="font-family:'Outfit',sans-serif; font-size:0.7rem; color:#385030;
-                    margin-top:8px; text-align:center; letter-spacing:0.04em;">
-            ▶ Play to hear bean description and feature explanation demo
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-
 # ─────────────────────────────────────────────────────────────────────────────
 # FEATURE SPEC  (label, min, max, default, hint)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1108,28 +964,6 @@ with tab1:
                 {''.join(f'<span class="fact-chip" style="background:{col_hex}14; border-color:{col_hex}40; color:#d0eebc;">{f}</span>' for f in info['facts'])}
             </div>
             """, unsafe_allow_html=True)
-
-            # ── Audio Narration ──
-            st.markdown('<div style="margin-top:6px;"></div>', unsafe_allow_html=True)
-            if TTS_AVAILABLE:
-                with st.spinner("🎙️ Generating voice narration..."):
-                    narration_text = build_narration(pred_class, confidence, user_vals)
-                    audio_b64 = generate_audio_b64(narration_text)
-                if audio_b64:
-                    render_audio_player(audio_b64, pred_class, col_hex)
-                else:
-                    st.markdown(
-                        '<div class="glass-card" style="text-align:center; padding:14px;">'
-                        '<span style="color:#4a7040; font-size:0.82rem;">⚠️ Audio generation failed — check internet connection.</span>'
-                        '</div>', unsafe_allow_html=True
-                    )
-            else:
-                st.markdown(
-                    '<div class="glass-card" style="padding:14px; border-color:#3a6030aa;">'
-                    '<span style="color:#4a7040; font-size:0.8rem;">🔈 Audio unavailable — add '
-                    '<code style="color:#80c060;">gtts</code> to requirements.txt and redeploy.</span>'
-                    '</div>', unsafe_allow_html=True
-                )
 
         else:
             # ── Waiting state with tip ──
