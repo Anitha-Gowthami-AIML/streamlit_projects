@@ -969,206 +969,206 @@ def main():
     # ══════════════════════════════════════════════════════════
     # TAB 1 — Prediction
     # ══════════════════════════════════════════════════════════
-with tab1:
-        if predict_btn:
-            with st.spinner("🧠 Analyzing risk profile…"):
-                prob, model_probs, X_raw, X_sc = compute_risk(
-                    inp, results, feat_cols, scaler, le_dict, weights)
-                time.sleep(0.4)
-
-            # ── Risk level ────────────────────────────────────
-            if prob < 0.25:
-                lvl, col, emoji, pop_emoji = "LOW RISK", ACC, "🟢", "🎉🥳✨🙌💪🎊"
-            elif prob < 0.50:
-                lvl, col, emoji, pop_emoji = "MODERATE RISK", ACC3, "🟡", "⚠️🤔💡📚🔍🛠️"
-            elif prob < 0.75:
-                lvl, col, emoji, pop_emoji = "HIGH RISK", "#ff8c00", "🟠", "😰⚡🚨📉💸🏃"
-            else:
-                lvl, col, emoji, pop_emoji = "CRITICAL RISK", ACC2, "🔴", "🚨😱💀⛔🔥🆘"
-
-            # ── Emoji pop-up ──────────────────────────────────
-            st.markdown(f"""
-            <div style="text-align:center;font-size:3rem;
-              animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);margin:0.5rem 0">
-              {pop_emoji}
-            </div>
-            <style>
-            @keyframes popIn {{
-              0% {{ transform:scale(0.2); opacity:0 }}
-              100% {{ transform:scale(1); opacity:1 }}
-            }}
-            </style>
-            """, unsafe_allow_html=True)
-
-            # ── Risk badge ────────────────────────────────────
-            st.markdown(f"""
-            <div style="text-align:center;margin:0.8rem 0 1.4rem">
-              {risk_badge(lvl, col, emoji)}
-            </div>
-            """, unsafe_allow_html=True)
-
-            # ── Gauge + metrics row ───────────────────────────
-            gc, mc1, mc2, mc3 = st.columns([1.2, 1, 1, 1])
-            with gc:
-                gauge_b64 = plot_risk_gauge(prob)
+    with tab1:
+            if predict_btn:
+                with st.spinner("🧠 Analyzing risk profile…"):
+                    prob, model_probs, X_raw, X_sc = compute_risk(
+                        inp, results, feat_cols, scaler, le_dict, weights)
+                    time.sleep(0.4)
+    
+                # ── Risk level ────────────────────────────────────
+                if prob < 0.25:
+                    lvl, col, emoji, pop_emoji = "LOW RISK", ACC, "🟢", "🎉🥳✨🙌💪🎊"
+                elif prob < 0.50:
+                    lvl, col, emoji, pop_emoji = "MODERATE RISK", ACC3, "🟡", "⚠️🤔💡📚🔍🛠️"
+                elif prob < 0.75:
+                    lvl, col, emoji, pop_emoji = "HIGH RISK", "#ff8c00", "🟠", "😰⚡🚨📉💸🏃"
+                else:
+                    lvl, col, emoji, pop_emoji = "CRITICAL RISK", ACC2, "🔴", "🚨😱💀⛔🔥🆘"
+    
+                # ── Emoji pop-up ──────────────────────────────────
                 st.markdown(f"""
-                <div style="
-                  display:flex;align-items:center;
-                  justify-content:center;height:100%;
-                  padding-top:0.3rem;
-                ">
-                  <img src="data:image/png;base64,{gauge_b64}"
-                       style="width:100%;max-width:260px;height:auto;
-                              display:block;margin:0 auto;"
-                       alt="Risk Gauge"/>
+                <div style="text-align:center;font-size:3rem;
+                  animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);margin:0.5rem 0">
+                  {pop_emoji}
+                </div>
+                <style>
+                @keyframes popIn {{
+                  0% {{ transform:scale(0.2); opacity:0 }}
+                  100% {{ transform:scale(1); opacity:1 }}
+                }}
+                </style>
+                """, unsafe_allow_html=True)
+    
+                # ── Risk badge ────────────────────────────────────
+                st.markdown(f"""
+                <div style="text-align:center;margin:0.8rem 0 1.4rem">
+                  {risk_badge(lvl, col, emoji)}
                 </div>
                 """, unsafe_allow_html=True)
-            with mc1:
-                st.metric("Ensemble Risk", f"{prob*100:.1f}%",
-                          delta="▲ Above Safe Zone" if prob > 0.35 else "▼ In Safe Zone")
-            with mc2:
-                best_prob = model_probs.get(best_name.replace("⭐ ",""), prob)
-                st.metric(f"Best Model ({best_name})", f"{best_prob*100:.1f}%")
-            with mc3:
-                delta_from_avg = prob - 0.42
-                st.metric("vs Population Avg",
-                          f"{'+' if delta_from_avg>0 else ''}{delta_from_avg*100:.1f}%",
-                          delta="Higher than avg" if delta_from_avg>0 else "Lower than avg")
-
-            st.markdown("<hr style='border-color:rgba(0,212,170,0.15)'>", unsafe_allow_html=True)
-
-            # ── Per-model breakdown ───────────────────────────
-            st.markdown("#### 🤖 Per-Model Predictions")
-            model_cols = st.columns(len(model_probs))
-            p_colors = [ACC, ACC3, "#4fc3f7", ACC4, ACC2]
-            for col_obj, (mname, mp), pc in zip(model_cols, model_probs.items(), p_colors):
-                with col_obj:
+    
+                # ── Gauge + metrics row ───────────────────────────
+                gc, mc1, mc2, mc3 = st.columns([1.2, 1, 1, 1])
+                with gc:
+                    gauge_b64 = plot_risk_gauge(prob)
                     st.markdown(f"""
                     <div style="
-                      background:rgba(15,22,40,0.85);
-                      border:1px solid {pc}33;border-top:3px solid {pc};
-                      border-radius:12px;padding:0.9rem;text-align:center;
+                      display:flex;align-items:center;
+                      justify-content:center;height:100%;
+                      padding-top:0.3rem;
                     ">
-                      <div style="font-size:0.72rem;color:#8b949e;margin-bottom:4px">{mname}</div>
-                      <div style="font-size:1.5rem;font-weight:700;color:{pc}">{mp*100:.1f}%</div>
-                      <div style="font-size:0.7rem;color:#8b949e;margin-top:4px">
-                        {"🔴 High" if mp>0.5 else "🟢 Low"}
-                      </div>
+                      <img src="data:image/png;base64,{gauge_b64}"
+                           style="width:100%;max-width:260px;height:auto;
+                                  display:block;margin:0 auto;"
+                           alt="Risk Gauge"/>
                     </div>
                     """, unsafe_allow_html=True)
-
-            st.markdown("<br>", unsafe_allow_html=True)
-
-            # ── Radar + Risk bar ──────────────────────────────
-            rc1, rc2 = st.columns([1, 1.5])
-            with rc1:
-                st.markdown("#### 🕸️ Risk Driver Radar")
-                st.pyplot(plot_radar(inp, feat_cols, avg_fi),
-                          use_container_width=True, clear_figure=True)
-            with rc2:
-                st.markdown("#### 📊 Model Probability Comparison")
-                fig, ax = dark_fig(8, 5)
-                names_bar = list(model_probs.keys())
-                vals_bar  = [model_probs[n]*100 for n in names_bar]
-                b_colors  = [ACC2 if v>50 else ACC3 if v>35 else ACC for v in vals_bar]
-                bars = ax.bar(range(len(names_bar)), vals_bar, color=b_colors,
-                              edgecolor="none", width=0.55)
-                ax.axhline(50, color=ACC2, linewidth=1.2, linestyle="--",
-                           alpha=0.6, label="50% threshold")
-                ax.set_xticks(range(len(names_bar)))
-                ax.set_xticklabels(names_bar, rotation=25, ha="right", fontsize=9)
-                ax.set_ylabel("Risk Probability (%)")
-                ax.set_title("Your Risk Score Across All Models", fontsize=11)
-                ax.set_ylim(0, 105)
-                ax.yaxis.grid(True, alpha=0.2)
-                ax.set_axisbelow(True)
-                ax.legend(facecolor=CARD, edgecolor="#1e2d40", labelcolor=TXT)
-                for bar, val in zip(bars, vals_bar):
-                    ax.text(bar.get_x()+bar.get_width()/2, bar.get_height()+1.5,
-                            f"{val:.1f}%", ha="center", va="bottom",
-                            fontsize=9, fontweight="bold", color=TXT)
-                plt.tight_layout()
-                st.pyplot(fig, use_container_width=True, clear_figure=True)
-
-            # ── Recommendations ───────────────────────────────
-            st.markdown("<hr style='border-color:rgba(0,212,170,0.15)'>", unsafe_allow_html=True)
-            st.markdown("## 🗺️ Personalized Action Plan")
-            recs = get_recs(inp, prob)
-            sec_cols = {"🚨 Critical Actions": ACC2,
-                        "⚠️ Important Actions": ACC3,
-                        "💡 Suggested Improvements": ACC4,
-                        "✅ Your Strengths": ACC}
-
-            for section, items in recs.items():
-                if not items:
-                    continue
-                col_s = sec_cols[section]
-                st.markdown(f"""
-                <div style="color:{col_s};font-size:1rem;font-weight:600;
-                  margin:1.2rem 0 0.5rem;letter-spacing:0.02em">{section}
-                </div>""", unsafe_allow_html=True)
-                for icon, title, detail in items:
+                with mc1:
+                    st.metric("Ensemble Risk", f"{prob*100:.1f}%",
+                              delta="▲ Above Safe Zone" if prob > 0.35 else "▼ In Safe Zone")
+                with mc2:
+                    best_prob = model_probs.get(best_name.replace("⭐ ",""), prob)
+                    st.metric(f"Best Model ({best_name})", f"{best_prob*100:.1f}%")
+                with mc3:
+                    delta_from_avg = prob - 0.42
+                    st.metric("vs Population Avg",
+                              f"{'+' if delta_from_avg>0 else ''}{delta_from_avg*100:.1f}%",
+                              delta="Higher than avg" if delta_from_avg>0 else "Lower than avg")
+    
+                st.markdown("<hr style='border-color:rgba(0,212,170,0.15)'>", unsafe_allow_html=True)
+    
+                # ── Per-model breakdown ───────────────────────────
+                st.markdown("#### 🤖 Per-Model Predictions")
+                model_cols = st.columns(len(model_probs))
+                p_colors = [ACC, ACC3, "#4fc3f7", ACC4, ACC2]
+                for col_obj, (mname, mp), pc in zip(model_cols, model_probs.items(), p_colors):
+                    with col_obj:
+                        st.markdown(f"""
+                        <div style="
+                          background:rgba(15,22,40,0.85);
+                          border:1px solid {pc}33;border-top:3px solid {pc};
+                          border-radius:12px;padding:0.9rem;text-align:center;
+                        ">
+                          <div style="font-size:0.72rem;color:#8b949e;margin-bottom:4px">{mname}</div>
+                          <div style="font-size:1.5rem;font-weight:700;color:{pc}">{mp*100:.1f}%</div>
+                          <div style="font-size:0.7rem;color:#8b949e;margin-top:4px">
+                            {"🔴 High" if mp>0.5 else "🟢 Low"}
+                          </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+    
+                st.markdown("<br>", unsafe_allow_html=True)
+    
+                # ── Radar + Risk bar ──────────────────────────────
+                rc1, rc2 = st.columns([1, 1.5])
+                with rc1:
+                    st.markdown("#### 🕸️ Risk Driver Radar")
+                    st.pyplot(plot_radar(inp, feat_cols, avg_fi),
+                              use_container_width=True, clear_figure=True)
+                with rc2:
+                    st.markdown("#### 📊 Model Probability Comparison")
+                    fig, ax = dark_fig(8, 5)
+                    names_bar = list(model_probs.keys())
+                    vals_bar  = [model_probs[n]*100 for n in names_bar]
+                    b_colors  = [ACC2 if v>50 else ACC3 if v>35 else ACC for v in vals_bar]
+                    bars = ax.bar(range(len(names_bar)), vals_bar, color=b_colors,
+                                  edgecolor="none", width=0.55)
+                    ax.axhline(50, color=ACC2, linewidth=1.2, linestyle="--",
+                               alpha=0.6, label="50% threshold")
+                    ax.set_xticks(range(len(names_bar)))
+                    ax.set_xticklabels(names_bar, rotation=25, ha="right", fontsize=9)
+                    ax.set_ylabel("Risk Probability (%)")
+                    ax.set_title("Your Risk Score Across All Models", fontsize=11)
+                    ax.set_ylim(0, 105)
+                    ax.yaxis.grid(True, alpha=0.2)
+                    ax.set_axisbelow(True)
+                    ax.legend(facecolor=CARD, edgecolor="#1e2d40", labelcolor=TXT)
+                    for bar, val in zip(bars, vals_bar):
+                        ax.text(bar.get_x()+bar.get_width()/2, bar.get_height()+1.5,
+                                f"{val:.1f}%", ha="center", va="bottom",
+                                fontsize=9, fontweight="bold", color=TXT)
+                    plt.tight_layout()
+                    st.pyplot(fig, use_container_width=True, clear_figure=True)
+    
+                # ── Recommendations ───────────────────────────────
+                st.markdown("<hr style='border-color:rgba(0,212,170,0.15)'>", unsafe_allow_html=True)
+                st.markdown("## 🗺️ Personalized Action Plan")
+                recs = get_recs(inp, prob)
+                sec_cols = {"🚨 Critical Actions": ACC2,
+                            "⚠️ Important Actions": ACC3,
+                            "💡 Suggested Improvements": ACC4,
+                            "✅ Your Strengths": ACC}
+    
+                for section, items in recs.items():
+                    if not items:
+                        continue
+                    col_s = sec_cols[section]
                     st.markdown(f"""
-                    <div style="
-                      background:rgba(15,22,40,0.82);
-                      border:1px solid {col_s}33;border-left:3px solid {col_s};
-                      border-radius:12px;padding:0.9rem 1.2rem;margin-bottom:0.6rem;
-                      backdrop-filter:blur(12px);
-                    ">
-                      <div style="font-size:0.95rem;font-weight:600;
-                        color:{col_s};margin-bottom:3px">
-                        {icon} {title}
-                      </div>
-                      <div style="font-size:0.83rem;color:#8b949e;
-                        line-height:1.5">{detail}</div>
+                    <div style="color:{col_s};font-size:1rem;font-weight:600;
+                      margin:1.2rem 0 0.5rem;letter-spacing:0.02em">{section}
                     </div>""", unsafe_allow_html=True)
-
-        else:
-            # ── Placeholder ───────────────────────────────────
-            st.markdown("""
-            <div style="
-              text-align:center;padding:4rem 2rem;
-              background:rgba(15,22,40,0.6);border:1px dashed rgba(0,212,170,0.3);
-              border-radius:20px;backdrop-filter:blur(16px);
-            ">
-              <div style="font-size:4rem;margin-bottom:1rem">🎯</div>
-              <div style="font-size:1.5rem;font-weight:700;color:#00d4aa;margin-bottom:0.6rem">
-                Ready to Assess Your Risk
-              </div>
-              <div style="color:#8b949e;font-size:0.95rem;max-width:480px;
-                margin:0 auto;line-height:1.7">
-                Fill in your professional details in the sidebar, then hit
-                <strong style="color:#00d4aa">⚡ PREDICT LAYOFF RISK</strong> to get
-                your AI-powered risk score, feature breakdown, and personalized upskilling roadmap.
-              </div>
-              <div style="margin-top:2rem;display:flex;justify-content:center;
-                gap:2rem;flex-wrap:wrap">
-                <div style="color:#8b949e;font-size:0.85rem">🤖 6 ML Models + ANN</div>
-                <div style="color:#8b949e;font-size:0.85rem">📊 40+ Variables</div>
-                <div style="color:#8b949e;font-size:0.85rem">🗺️ Action Roadmap</div>
-                <div style="color:#8b949e;font-size:0.85rem">🎯 Instant Results</div>
-              </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-            st.markdown("<br>", unsafe_allow_html=True)
-            c1, c2, c3, c4, c5 = st.columns(5)
-            palette_m = [ACC, ACC3, ACC4, ACC2, "#4fc3f7"]
-            for col_obj, (name, res), pc in zip(
-                    [c1,c2,c3,c4,c5], list(results.items())[:5], palette_m):
-                with col_obj:
-                    st.markdown(f"""
-                    <div style="
-                      background:rgba(15,22,40,0.82);border:1px solid {pc}33;
-                      border-top:3px solid {pc};border-radius:12px;
-                      padding:0.8rem;text-align:center;
-                    ">
-                      <div style="font-size:0.7rem;color:#8b949e">{name}</div>
-                      <div style="font-size:1.2rem;font-weight:700;color:{pc}">
-                        {res['auc']:.4f}
-                      </div>
-                      <div style="font-size:0.68rem;color:#8b949e">ROC-AUC</div>
-                    </div>""", unsafe_allow_html=True)
+                    for icon, title, detail in items:
+                        st.markdown(f"""
+                        <div style="
+                          background:rgba(15,22,40,0.82);
+                          border:1px solid {col_s}33;border-left:3px solid {col_s};
+                          border-radius:12px;padding:0.9rem 1.2rem;margin-bottom:0.6rem;
+                          backdrop-filter:blur(12px);
+                        ">
+                          <div style="font-size:0.95rem;font-weight:600;
+                            color:{col_s};margin-bottom:3px">
+                            {icon} {title}
+                          </div>
+                          <div style="font-size:0.83rem;color:#8b949e;
+                            line-height:1.5">{detail}</div>
+                        </div>""", unsafe_allow_html=True)
+    
+            else:
+                # ── Placeholder ───────────────────────────────────
+                st.markdown("""
+                <div style="
+                  text-align:center;padding:4rem 2rem;
+                  background:rgba(15,22,40,0.6);border:1px dashed rgba(0,212,170,0.3);
+                  border-radius:20px;backdrop-filter:blur(16px);
+                ">
+                  <div style="font-size:4rem;margin-bottom:1rem">🎯</div>
+                  <div style="font-size:1.5rem;font-weight:700;color:#00d4aa;margin-bottom:0.6rem">
+                    Ready to Assess Your Risk
+                  </div>
+                  <div style="color:#8b949e;font-size:0.95rem;max-width:480px;
+                    margin:0 auto;line-height:1.7">
+                    Fill in your professional details in the sidebar, then hit
+                    <strong style="color:#00d4aa">⚡ PREDICT LAYOFF RISK</strong> to get
+                    your AI-powered risk score, feature breakdown, and personalized upskilling roadmap.
+                  </div>
+                  <div style="margin-top:2rem;display:flex;justify-content:center;
+                    gap:2rem;flex-wrap:wrap">
+                    <div style="color:#8b949e;font-size:0.85rem">🤖 6 ML Models + ANN</div>
+                    <div style="color:#8b949e;font-size:0.85rem">📊 40+ Variables</div>
+                    <div style="color:#8b949e;font-size:0.85rem">🗺️ Action Roadmap</div>
+                    <div style="color:#8b949e;font-size:0.85rem">🎯 Instant Results</div>
+                  </div>
+                </div>
+                """, unsafe_allow_html=True)
+    
+                st.markdown("<br>", unsafe_allow_html=True)
+                c1, c2, c3, c4, c5 = st.columns(5)
+                palette_m = [ACC, ACC3, ACC4, ACC2, "#4fc3f7"]
+                for col_obj, (name, res), pc in zip(
+                        [c1,c2,c3,c4,c5], list(results.items())[:5], palette_m):
+                    with col_obj:
+                        st.markdown(f"""
+                        <div style="
+                          background:rgba(15,22,40,0.82);border:1px solid {pc}33;
+                          border-top:3px solid {pc};border-radius:12px;
+                          padding:0.8rem;text-align:center;
+                        ">
+                          <div style="font-size:0.7rem;color:#8b949e">{name}</div>
+                          <div style="font-size:1.2rem;font-weight:700;color:{pc}">
+                            {res['auc']:.4f}
+                          </div>
+                          <div style="font-size:0.68rem;color:#8b949e">ROC-AUC</div>
+                        </div>""", unsafe_allow_html=True)
     # ══════════════════════════════════════════════════════════
     # TAB 2 — Model Analytics
     # ══════════════════════════════════════════════════════════
