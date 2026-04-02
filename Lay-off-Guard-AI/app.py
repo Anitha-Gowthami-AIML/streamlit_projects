@@ -793,20 +793,16 @@ def plot_ann_history(history):
 
 
 def plot_risk_gauge(prob: float):
-    """Circular gauge chart for risk probability."""
-    fig, ax = plt.subplots(figsize=(3.2, 1.8), subplot_kw={"projection": "polar"})
+    """Circular gauge chart — returns tight base64 PNG."""
+    fig, ax = plt.subplots(figsize=(3.0, 1.6), subplot_kw={"projection": "polar"})
     fig.patch.set_facecolor("none")
     ax.set_facecolor("none")
+    fig.subplots_adjust(left=0.0, right=1.0, top=1.0, bottom=0.0)
+    ax.set_position([0.0, -0.08, 1.0, 1.08])
 
-    # ← This is the critical fix: manually position the polar axes
-    # [left, bottom, width, height] in figure fraction
-    ax.set_position([0.05, 0.02, 0.90, 0.88])
-
-    # Background arc
     theta = np.linspace(np.pi, 0, 200)
-    ax.plot(theta, [0.9]*200, linewidth=9, color="#1e2d40", solid_capstyle="round")
+    ax.plot(theta, [0.9]*200, linewidth=10, color="#1e2d40", solid_capstyle="round")
 
-    # Colored arc
     colors_gauge = [(0.0, ACC), (0.4, ACC3), (0.65, "#ff8c00"), (1.0, ACC2)]
     def interp_color(t):
         for i in range(len(colors_gauge)-1):
@@ -814,7 +810,7 @@ def plot_risk_gauge(prob: float):
             t1, c1 = colors_gauge[i+1]
             if t0 <= t <= t1:
                 r = (t-t0)/(t1-t0)
-                def hex2rgb(h): return [int(h[i:i+2],16)/255 for i in (1,3,5)]
+                def hex2rgb(h): return [int(h[j:j+2],16)/255 for j in (1,3,5)]
                 rgb0, rgb1 = hex2rgb(c0), hex2rgb(c1)
                 return tuple(rgb0[j]*(1-r)+rgb1[j]*r for j in range(3))
         return (1,0,0)
@@ -822,36 +818,39 @@ def plot_risk_gauge(prob: float):
     fill_theta = np.linspace(np.pi, np.pi - np.pi*prob, 200)
     colors_arr = [interp_color(i/199*prob) for i in range(200)]
     for i in range(len(fill_theta)-1):
-        ax.plot(fill_theta[i:i+2], [0.9,0.9], linewidth=9,
+        ax.plot(fill_theta[i:i+2], [0.9,0.9], linewidth=10,
                 color=colors_arr[i], solid_capstyle="round")
 
-    # Needle
     angle = np.pi - np.pi * prob
-    ax.annotate("", xy=(angle, 0.68), xytext=(0, 0),
-                arrowprops=dict(arrowstyle="-|>", color=TXT, lw=1.8,
-                                mutation_scale=11))
+    ax.annotate("", xy=(angle, 0.70), xytext=(0, 0),
+                arrowprops=dict(arrowstyle="-|>", color=TXT, lw=2.0, mutation_scale=12))
 
-    # ← Tight limits — no extra space above or below the semicircle
     ax.set_ylim(0, 1.0)
     ax.set_xlim(0, np.pi)
     ax.axis("off")
 
-    # Labels — pulled inward to fit tight ylim
     for v, lbl in [(0,"0%"),(0.25,"25%"),(0.5,"50%"),(0.75,"75%"),(1,"100%")]:
         a = np.pi - np.pi*v
-        ax.text(a, 1.03, lbl, ha="center", va="center", fontsize=6,
+        ax.text(a, 1.04, lbl, ha="center", va="center", fontsize=6,
                 color=MUT, fontfamily="monospace")
 
-    # Center percentage text
     col = (ACC if prob < 0.25 else
            ACC3 if prob < 0.5 else
            "#ff8c00" if prob < 0.75 else ACC2)
-    ax.text(np.pi/2, 0.30, f"{prob*100:.1f}%", ha="center", va="center",
-            fontsize=18, fontweight="bold", color=col, fontfamily="monospace")
-    ax.text(np.pi/2, 0.07, "RISK SCORE", ha="center", va="center",
+    ax.text(np.pi/2, 0.32, f"{prob*100:.1f}%", ha="center", va="center",
+            fontsize=19, fontweight="bold", color=col, fontfamily="monospace")
+    ax.text(np.pi/2, 0.08, "RISK SCORE", ha="center", va="center",
             fontsize=6, color=MUT, fontfamily="monospace")
 
-    return fig
+    # ── Convert to base64 PNG — bypasses Streamlit stretching ──
+    import io, base64
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=150, bbox_inches="tight",
+                transparent=True, pad_inches=0.0)
+    plt.close(fig)
+    buf.seek(0)
+    b64 = base64.b64encode(buf.read()).decode()
+    return b64
 
 def plot_radar(inp_vals, feat_cols, avg_fi):
     """Radar chart of top 8 risk drivers for this user."""
@@ -1008,23 +1007,36 @@ def main():
             </div>
             """, unsafe_allow_html=True)
 
-            # ── Gauge + metrics row ───────────────────────────
-            gc, mc1, mc2, mc3 = st.columns([1.2, 1, 1, 1])
-            with gc:
-                st.pyplot(plot_risk_gauge(prob), use_container_width=True,
-                          clear_figure=True)
-            with mc1:
-                st.metric("Ensemble Risk", f"{prob*100:.1f}%",
-                          delta="▲ Above Safe Zone" if prob > 0.35 else "▼ In Safe Zone")
-            with mc2:
-                best_prob = model_probs.get(best_name.replace("⭐ ",""), prob)
-                st.metric(f"Best Model ({best_name})", f"{best_prob*100:.1f}%")
-            with mc3:
-                delta_from_avg = prob - 0.42
-                st.metric("vs Population Avg",
-                          f"{'+' if delta_from_avg>0 else ''}{delta_from_avg*100:.1f}%",
-                          delta="Higher than avg" if delta_from_avg>0 else "Lower than avg")
-
+                    # ── Gauge + metrics row ───────────────────────────
+        gc, mc1, mc2, mc3 = st.columns([1.2, 1, 1, 1])
+        with gc:
+            # ── Render gauge as fixed-height HTML image — no Streamlit stretching ──
+            gauge_b64 = plot_risk_gauge(prob)
+            st.markdown(f"""
+            <div style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              height:100%;
+              padding-top:0.3rem;
+            ">
+              <img src="data:image/png;base64,{gauge_b64}"
+                   style="width:100%;max-width:260px;height:auto;display:block;margin:0 auto;"
+                   alt="Risk Gauge"/>
+            </div>
+            """, unsafe_allow_html=True)
+        with mc1:
+            st.metric("Ensemble Risk", f"{prob*100:.1f}%",
+                      delta="▲ Above Safe Zone" if prob > 0.35 else "▼ In Safe Zone")
+        with mc2:
+            best_prob = model_probs.get(best_name.replace("⭐ ",""), prob)
+            st.metric(f"Best Model ({best_name})", f"{best_prob*100:.1f}%")
+        with mc3:
+            delta_from_avg = prob - 0.42
+            st.metric("vs Population Avg",
+                      f"{'+' if delta_from_avg>0 else ''}{delta_from_avg*100:.1f}%",
+                      delta="Higher than avg" if delta_from_avg>0 else "Lower than avg")
+            
             st.markdown("<hr style='border-color:rgba(0,212,170,0.15)'>", unsafe_allow_html=True)
 
             # ── Per-model breakdown ───────────────────────────
