@@ -293,7 +293,7 @@ http://localhost:8501
 **Anitha Gowthami**
 AI & ML Student — IIT Guwahati – IOT Academy
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/TODO-your-linkedin-id)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)]([https://www.linkedin.com/in/TODO-your-linkedin-id](https://www.linkedin.com/in/anitha-gowthami-134b1154/)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-black?logo=github)](https://github.com/Anitha-Gowthami-AIML)
 
 ---
