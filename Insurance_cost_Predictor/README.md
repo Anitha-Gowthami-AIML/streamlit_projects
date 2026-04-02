@@ -4,7 +4,6 @@
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://app-insurance-cost-predictor.streamlit.app/)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
 ![Scikit-learn](https://img.shields.io/badge/Scikit--learn-ML-orange.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 > A Machine Learning web application that predicts health insurance costs based on personal and lifestyle factors — built and deployed as part of the **AI & ML Program at IIT Guwahati – IOT Academy**.
 
@@ -172,7 +171,7 @@ From the data analysis and model training, the following patterns emerged:
 
 | Input Form | Prediction Result |
 |---|---|
-| ![Input](screenshots/input.png) | ![Result](screenshots/result.png) |
+| ![Input]1.png) | ![Result](2.png) | ![Result](3.png)
 
 ---
 
@@ -181,15 +180,10 @@ From the data analysis and model training, the following patterns emerged:
 **Anitha Gowthami**
 AI & ML Student — IIT Guwahati – IOT Academy
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/your-linkedin-id)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)]([https://www.linkedin.com/in/your-linkedin-id](https://www.linkedin.com/in/anitha-gowthami-134b1154/))
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-black?logo=github)](https://github.com/Anitha-Gowthami-AIML)
 
 ---
 
-## 📜 License
-
-This project is licensed under the **MIT License** — feel free to use, share, and build upon it with attribution.
-
----
 
 > ⭐ If you found this project helpful, please consider giving it a **star** on GitHub!
