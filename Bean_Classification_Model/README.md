@@ -281,15 +281,15 @@ http://localhost:8501
 
 | Landing Page | Input Form |
 |---|---|
-| ![Landing](screenshots/landing.png) | ![Input](screenshots/input.png) |
+| ![Landing](1.png) | ![Input](input-1.png) | ![Predict](Predict Button.png)| ![result](result.png)
 
 | Model Comparison | Confusion Matrices |
 |---|---|
-| ![Models](screenshots/model_comparison.png) | ![CM](screenshots/confusion_matrices.png) |
+| ![Target disrtibution]chart_dsbn.png) ![Correlations]7.png) |![Models comparision]8.png) ![CM](9.png) |![Metrics]metrics.png)
 
-| Feature Importances | Bean Encyclopedia |
+| Bean Encyclopedia | Pipeline |
 |---|---|
-| ![Features](screenshots/feature_importance.png) | ![Encyclopedia](screenshots/encyclopedia.png) |
+| ![Encyclopedia](bean_encyclopedia.png) |![Encyclopedia](bean_encyclopedia2.png) |![Pipeline](pipeline.png) |
 
 > 📌 **TODO: Create a `screenshots/` folder in your repo and upload your app screenshots**
 
