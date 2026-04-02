@@ -248,10 +248,6 @@ Bean_Classification_Model/
 └── README.md                     # Project documentation
 ```
 
-> 📌 **TODO: Confirm your actual `.pkl` model filename and dataset filename**
-
----
-
 ## 🚀 How to Run Locally
 
 ### 1. Clone the Repository
@@ -283,11 +279,9 @@ http://localhost:8501
 |---|---|
 | ![Landing](1.png) | ![Input](input-1.png) | ![Predict](Predict Button.png)| ![result](result.png)
 
-| Model Comparison | Confusion Matrices |
 |---|---|
 | ![Target disrtibution](chart_dsbn.png) ![Correlations](7.png) |![Models comparision](8.png) ![CM](9.png) |![Metrics](metrics.png)
 
-| Bean Encyclopedia | Pipeline |
 |---|---|
 | ![Encyclopedia](bean_encyclopedia.png) |![Encyclopedia](bean_encyclopedia2.png) |![Pipeline](pipeline.png) |
 
@@ -301,8 +295,6 @@ AI & ML Student — IIT Guwahati – IOT Academy
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/TODO-your-linkedin-id)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-black?logo=github)](https://github.com/Anitha-Gowthami-AIML)
-
-> 📌 **TODO: Replace `TODO-your-linkedin-id` with your actual LinkedIn profile URL**
 
 ---
 
