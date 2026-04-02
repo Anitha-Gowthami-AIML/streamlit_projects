@@ -794,14 +794,17 @@ def plot_ann_history(history):
 
 def plot_risk_gauge(prob: float):
     """Circular gauge chart for risk probability."""
-    fig, ax = plt.subplots(figsize=(4, 2.2), subplot_kw={"projection": "polar"})
+    fig, ax = plt.subplots(figsize=(3.2, 1.8), subplot_kw={"projection": "polar"})
     fig.patch.set_facecolor("none")
     ax.set_facecolor("none")
-    fig.subplots_adjust(top=1.0, bottom=0.0, left=0.0, right=1.0)  # ← replaces tight_layout
+
+    # ← This is the critical fix: manually position the polar axes
+    # [left, bottom, width, height] in figure fraction
+    ax.set_position([0.05, 0.02, 0.90, 0.88])
 
     # Background arc
     theta = np.linspace(np.pi, 0, 200)
-    ax.plot(theta, [0.9]*200, linewidth=10, color="#1e2d40", solid_capstyle="round")
+    ax.plot(theta, [0.9]*200, linewidth=9, color="#1e2d40", solid_capstyle="round")
 
     # Colored arc
     colors_gauge = [(0.0, ACC), (0.4, ACC3), (0.65, "#ff8c00"), (1.0, ACC2)]
@@ -819,30 +822,34 @@ def plot_risk_gauge(prob: float):
     fill_theta = np.linspace(np.pi, np.pi - np.pi*prob, 200)
     colors_arr = [interp_color(i/199*prob) for i in range(200)]
     for i in range(len(fill_theta)-1):
-        ax.plot(fill_theta[i:i+2], [0.9,0.9], linewidth=10,
+        ax.plot(fill_theta[i:i+2], [0.9,0.9], linewidth=9,
                 color=colors_arr[i], solid_capstyle="round")
 
     # Needle
     angle = np.pi - np.pi * prob
-    ax.annotate("", xy=(angle, 0.68), xytext=(0,0),
-                arrowprops=dict(arrowstyle="-|>", color=TXT, lw=2.0, mutation_scale=13))
+    ax.annotate("", xy=(angle, 0.68), xytext=(0, 0),
+                arrowprops=dict(arrowstyle="-|>", color=TXT, lw=1.8,
+                                mutation_scale=11))
 
-    ax.set_ylim(0, 1.05)                    # ← tighter, removes dead space below
-    ax.set_xlim(0, np.pi * 1.02)            # ← tighter horizontal padding
+    # ← Tight limits — no extra space above or below the semicircle
+    ax.set_ylim(0, 1.0)
+    ax.set_xlim(0, np.pi)
     ax.axis("off")
 
-    # Labels
+    # Labels — pulled inward to fit tight ylim
     for v, lbl in [(0,"0%"),(0.25,"25%"),(0.5,"50%"),(0.75,"75%"),(1,"100%")]:
         a = np.pi - np.pi*v
-        ax.text(a, 1.05, lbl, ha="center", va="center", fontsize=6.5,
+        ax.text(a, 1.03, lbl, ha="center", va="center", fontsize=6,
                 color=MUT, fontfamily="monospace")
 
-    # Center text
-    col = ACC if prob < 0.25 else ACC3 if prob < 0.5 else "#ff8c00" if prob < 0.75 else ACC2
-    ax.text(np.pi/2, 0.32, f"{prob*100:.1f}%", ha="center", va="center",
-            fontsize=20, fontweight="bold", color=col, fontfamily="monospace")
-    ax.text(np.pi/2, 0.08, "RISK SCORE", ha="center", va="center",
-            fontsize=6.5, color=MUT, fontfamily="monospace")
+    # Center percentage text
+    col = (ACC if prob < 0.25 else
+           ACC3 if prob < 0.5 else
+           "#ff8c00" if prob < 0.75 else ACC2)
+    ax.text(np.pi/2, 0.30, f"{prob*100:.1f}%", ha="center", va="center",
+            fontsize=18, fontweight="bold", color=col, fontfamily="monospace")
+    ax.text(np.pi/2, 0.07, "RISK SCORE", ha="center", va="center",
+            fontsize=6, color=MUT, fontfamily="monospace")
 
     return fig
 
