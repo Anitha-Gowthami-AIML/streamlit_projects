@@ -171,7 +171,7 @@ From the data analysis and model training, the following patterns emerged:
 
 | Input Form | Prediction Result |
 |---|---|
-| ![Input]1.png) | ![Result](2.png) | ![Result](3.png)
+| ![Input](1.png) | ![Result](2.png) | ![Result](3.png)
 
 ---
 
