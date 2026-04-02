@@ -1,11 +1,12 @@
-# 🫘 Bean Classification Model – 7 Varieties
+# 🫘 Dry Bean Classifier — 7 Varieties
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://bean-classifier-app-7-varieties.streamlit.app/)
 ![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)
-![Scikit-learn](https://img.shields.io/badge/Scikit--learn-ML-orange.svg)
+![SVM Accuracy](https://img.shields.io/badge/SVM%20Accuracy-92.4%25-brightgreen.svg)
+![Models](https://img.shields.io/badge/Models%20Trained-9-orange.svg)
 ![Status](https://img.shields.io/badge/Status-Live-brightgreen.svg)
 
-> A multi-class Machine Learning classification web application that identifies **7 varieties of dry beans** from morphological features — built and deployed as part of the **AI & ML Program at IIT Guwahati – IOT Academy**.
+> AI-powered identification of **7 Turkish dry bean varieties** using **16 geometric morphological features** captured via computer vision — built and deployed as part of the **AI & ML Program at IIT Guwahati – IOT Academy**.
 
 ---
 
@@ -18,15 +19,16 @@
 ## 📌 Table of Contents
 
 - [Overview](#overview)
-- [Bean Varieties](#bean-varieties)
+- [App Features](#app-features)
+- [Bean Varieties & Class Distribution](#bean-varieties--class-distribution)
 - [Dataset](#dataset)
 - [Features Used](#features-used)
-- [Tech Stack](#tech-stack)
 - [ML Pipeline](#ml-pipeline)
-- [Models Trained](#models-trained)
+- [Model Results](#model-results)
+- [Key Insights](#key-insights)
+- [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
 - [How to Run Locally](#how-to-run-locally)
-- [Key Insights](#key-insights)
 - [Screenshots](#screenshots)
 - [Author](#author)
 
@@ -34,27 +36,54 @@
 
 ## 📖 Overview
 
-Identifying dry bean varieties manually is time-consuming and error-prone. This project uses **Machine Learning** to automatically classify dry beans into one of 7 registered varieties based on their physical and shape-based measurements.
+Identifying dry bean varieties manually is time-consuming and error-prone in agricultural settings. This project builds an **end-to-end supervised ML classification system** that identifies dry beans into one of 7 registered Turkish varieties using only their **physical shape measurements**.
 
-The dataset originates from a real-world computer vision study at Selçuk University, Turkey, where **13,611 bean grain images** were captured with a high-resolution camera, and 16 morphological features were extracted per grain.
+The dataset originates from a real computer vision study at Selçuk University, Turkey, where **13,611 bean grain images** were photographed with a high-resolution camera and **16 morphological features** were extracted per grain using image segmentation.
 
-This end-to-end project covers data preprocessing, EDA, multi-model training, evaluation, and deployment as an interactive **Streamlit web application**.
+The best performing model — **SVM with 92.4% accuracy and zero overfitting** — is deployed as an interactive Streamlit web application with 3 dedicated sections.
 
 ---
 
-## 🫘 Bean Varieties
+## ✨ App Features
 
-The model classifies beans into one of these **7 registered varieties**:
+The app has **3 tabs**:
 
-| # | Variety | Description |
-|---|---|---|
-| 1 | **Seker** | Small, round-shaped bean |
-| 2 | **Barbunya** | Medium-sized, spotted bean |
-| 3 | **Bombay** | Large-sized bean |
-| 4 | **Cali** | Medium-large, oval-shaped bean |
-| 5 | **Dermason** | Small-sized, elongated bean |
-| 6 | **Horoz** | Large, elongated hook-shaped bean |
-| 7 | **Sira** | Medium-sized, oval/flat bean |
+### 🫘 Tab 1 — Classify a Bean
+- Enter all 16 morphological measurements via interactive sliders and input fields
+- Grouped into **Size Measurements**, **Shape & Form**, and **Shape Factors**
+- Click **"Identify Bean Variety"** to get real-time classification
+- Result displays predicted variety name, actual bean photograph, and confidence score
+
+### 📊 Tab 2 — EDA & Model Analysis
+Full exploratory data analysis pipeline including:
+1. Class distribution bar chart across all 7 varieties
+2. Feature correlation heatmap (Pearson, all 16 features)
+3. Feature importances chart (Random Forest — top predictors ranked)
+4. Model comparison table (all 9 models — Train Acc, Test Acc, F1, CV Mean, Overfitting flag)
+5. Overfitting analysis — Train vs Test accuracy chart
+6. Confusion matrices for top 3 models (SVM, Logistic Regression, Random Forest)
+7. ML pipeline summary (all 8 preprocessing + training steps)
+
+### 🌿 Tab 3 — Bean Encyclopedia
+- Visual guide to all 7 varieties with actual bean photographs
+- Origins, culinary uses, nutritional data, and classification characteristics per variety
+
+---
+
+## 🫘 Bean Varieties & Class Distribution
+
+| Variety | Samples | % of Dataset | Description |
+|---|---|---|---|
+| **Dermason** | 3,546 | 26.1% | Smallest bean — Tiny Titan of Turkish Cuisine |
+| **Sira** | 2,636 | 19.4% | Elongated All-Rounder |
+| **Seker** | 2,027 | 14.9% | Sugar Bean — Sweet & Smooth |
+| **Horoz** | 1,928 | 14.2% | Rooster Bean — Bold & Hearty |
+| **Cali** | 1,630 | 12.0% | Medium-large oval bean |
+| **Barbunya** | 1,322 | 9.7% | Speckled Cranberry Bean |
+| **Bombay** | 522 | 3.8% | Largest bean — minority class (handled with SMOTE) |
+| **Total** | **13,611** | **100%** | |
+
+> ⚠️ **Class Imbalance:** Bombay (522 samples) vs Dermason (3,546 samples) — handled using **SMOTE + class weighting**.
 
 ---
 
@@ -62,36 +91,134 @@ The model classifies beans into one of these **7 registered varieties**:
 
 | Property | Details |
 |---|---|
-| **Source** | [UCI Machine Learning Repository – Dry Bean Dataset](https://archive.ics.uci.edu/dataset/602/dry+bean+dataset) |
-| **Total Records** | 13,611 bean grain samples |
-| **Total Features** | 16 morphological features |
-| **Target Classes** | 7 (Seker, Barbunya, Bombay, Cali, Dermason, Horoz, Sira) |
-| **License** | Creative Commons Attribution 4.0 (CC BY 4.0) |
+| **Source** | [UCI Machine Learning Repository — Dry Bean Dataset](https://archive.ics.uci.edu/dataset/602/dry+bean+dataset) |
+| **Total Samples** | 13,611 |
+| **Features** | 16 morphological features |
+| **Target Classes** | 7 (Dermason, Sira, Seker, Horoz, Cali, Barbunya, Bombay) |
+| **Missing Values** | 0 |
+| **License** | CC BY 4.0 |
 
-> Citation: Koklu, M., & Ozkan, I. A. (2020). Multiclass classification of dry beans using computer vision and machine learning techniques. *Computers and Electronics in Agriculture*, 174, 105507.
+> **Citation:** Koklu, M., & Ozkan, I. A. (2020). Multiclass classification of dry beans using computer vision and machine learning techniques. *Computers and Electronics in Agriculture*, 174, 105507.
 
 ---
 
 ## 🔬 Features Used
 
+All 16 morphological features extracted via computer vision:
+
 | # | Feature | Description |
 |---|---|---|
-| 1 | **Area** | Number of pixels within the bean boundary |
-| 2 | **Perimeter** | Circumference length of the bean border |
-| 3 | **Major Axis Length** | Length of the longest line through the bean |
-| 4 | **Minor Axis Length** | Length of the shortest line through the bean |
-| 5 | **Aspect Ratio** | Ratio of Major to Minor axis length |
-| 6 | **Eccentricity** | Eccentricity of the equivalent ellipse |
-| 7 | **Convex Area** | Pixels in the smallest convex polygon enclosing the bean |
-| 8 | **Equivalent Diameter** | Diameter of circle with same area as the bean |
-| 9 | **Extent** | Ratio of pixels in bounding box to bean area |
-| 10 | **Solidity** | Ratio of pixels in convex shell to bean pixels |
-| 11 | **Roundness** | Calculated using (4πA) / P² |
-| 12 | **Compactness** | Measures roundness: Equivalent Diameter / Major Axis Length |
-| 13 | **ShapeFactor1** | Shape descriptor 1 |
-| 14 | **ShapeFactor2** | Shape descriptor 2 |
-| 15 | **ShapeFactor3** | Shape descriptor 3 |
-| 16 | **ShapeFactor4** | Shape descriptor 4 |
+| 1 | **Area** | Total pixel count inside bean boundary |
+| 2 | **Perimeter** | Length of the bean's outer border |
+| 3 | **Major Axis Length** | Longest axis distance |
+| 4 | **Minor Axis Length** | Shortest axis distance |
+| 5 | **Aspect Ratio** | Major ÷ Minor axis (1 = perfect circle) |
+| 6 | **Eccentricity** | 0 = circle, 1 = straight line |
+| 7 | **Convex Area** | Smallest convex polygon area |
+| 8 | **Equiv. Diameter** | Diameter of circle with same area |
+| 9 | **Extent** | Bean area ÷ bounding box area |
+| 10 | **Solidity** | Bean area ÷ convex hull area |
+| 11 | **Roundness** | 4π·Area ÷ Perimeter² |
+| 12 | **Compactness** | EquivDiameter ÷ MajorAxisLength |
+| 13 | **ShapeFactor1** ⭐ | MajorAxis ÷ Area — key feature |
+| 14 | **ShapeFactor2** | MinorAxis ÷ Area |
+| 15 | **ShapeFactor3** ⭐ | Compactness² — **most important** (importance: 0.112) |
+| 16 | **ShapeFactor4** | Convexity measure |
+
+> 💡 **Multicollinearity note:** Area ↔ ConvexArea correlation ≈ 1.00. AspectRatio ↔ Compactness = -0.99. Tree-based models handle this natively; linear models benefit from PCA or feature dropping.
+
+---
+
+## 🤖 ML Pipeline
+
+```
+Raw Dataset (13,611 × 16 features, 0 missing values)
+   │
+   ▼
+1. Data Loading & EDA
+   │  └── Duplicate removal, class distribution analysis
+   │
+   ▼
+2. Outlier Treatment
+   │  └── IQR capping applied to all numeric features (capped, not removed)
+   │
+   ▼
+3. Skewness Treatment
+   │  └── Box-Cox / Log1p / Yeo-Johnson transformations based on value range
+   │
+   ▼
+4. Feature Scaling
+   │  └── StandardScaler applied after outlier treatment (for SVM & LR compatibility)
+   │
+   ▼
+5. Train / Test Split
+   │  └── 80/20 stratified split — preserving class proportions in both sets
+   │
+   ▼
+6. Class Imbalance Handling
+   │  └── SMOTE + class weighting for BOMBAY minority class (522 samples)
+   │
+   ▼
+7. Model Training — 9 Algorithms
+   │  └── SVM | LR | DT | RF | KNN | GBM | AdaBoost | Bagging | Naive Bayes
+   │
+   ▼
+8. Hyperparameter Tuning
+   │  └── GridSearchCV / RandomizedSearchCV on top-3 models
+   │
+   ▼
+Best Model (SVM) Saved with Pickle / Joblib
+   │
+   ▼
+Streamlit App Deployed ✅
+```
+
+---
+
+## 📊 Model Results
+
+### All Models Comparison
+
+| Model | Train Accuracy | Test Accuracy | F1 Score | CV Mean | Overfitting |
+|---|---|---|---|---|---|
+| **SVM** 🏆 | 0.9238 | **0.9239** | **0.9238** | 0.9238 | ✅ No |
+| Logistic Regression | 0.9234 | 0.9207 | 0.9206 | 0.9226 | ✅ No |
+| Random Forest | 1.0000 | 0.9175 | 0.9171 | 0.9203 | ❌ Yes |
+| KNN | 0.9361 | 0.9147 | 0.9145 | 0.9192 | ✅ No |
+| Decision Tree | 1.0000 | 0.8979 | 0.8976 | 0.8925 | ❌ Yes |
+| Naive Bayes | 0.8926 | 0.8947 | 0.8946 | 0.8927 | ✅ No |
+| AdaBoost | 0.8701 | 0.8675 | 0.8670 | 0.8788 | ✅ No |
+
+> 🏆 **SVM wins** on all fronts: highest test accuracy (92.4%), best F1 (0.9238), and **zero overfitting gap**. Decision Tree and Random Forest achieved 100% training accuracy — a classic memorization signal.
+
+### Confusion Matrix Highlights (SVM)
+
+- ✅ **Dermason**: 660 correct classifications
+- ✅ **Sira**: 452 correct classifications
+- ✅ **Bombay**: Near-perfect recall (only 2 errors) despite severe class imbalance
+- ⚠️ **Hardest pair**: SIRA ↔ DERMASON — ~58 misclassifications due to shape similarity
+
+### Top Feature Importances (Random Forest)
+
+| Rank | Feature | Importance |
+|---|---|---|
+| 1 | ShapeFactor3 | 0.112 |
+| 2 | ShapeFactor1 | 0.094 |
+| 3 | Perimeter | 0.093 |
+| 4 | MajorAxisLength | 0.089 |
+
+> 💡 Shape-based metrics outperform raw size measurements for classification.
+
+---
+
+## 💡 Key Insights
+
+- 🏆 **SVM is the best model** — 92.4% test accuracy with zero overfitting, confirming excellent generalisation
+- 🌿 **Shape factors dominate** — ShapeFactor3 (0.112) is the single most predictive feature, not raw size
+- 🐘 **Bombay is the easiest to classify** — only 2 errors despite being the smallest class (522 samples)
+- 🔀 **Dermason ↔ Sira is the hardest pair** — ~58 SVM misclassifications due to overlapping shape profiles
+- ⚠️ **Random Forest and Decision Tree overfit** — both hit 100% training accuracy, confirming memorisation
+- 📊 **Class imbalance is real** — Dermason (3,546) is 6.8× larger than Bombay (522), handled with SMOTE
 
 ---
 
@@ -102,64 +229,10 @@ The model classifies beans into one of these **7 registered varieties**:
 | **Python** | Core programming language |
 | **Pandas** | Data loading, cleaning & manipulation |
 | **NumPy** | Numerical operations |
-| **Matplotlib & Seaborn** | EDA visualizations |
-| **Scikit-learn** | Model training, evaluation & preprocessing |
+| **Matplotlib & Seaborn** | EDA visualizations — heatmaps, bar charts, confusion matrices |
+| **Scikit-learn** | All ML models, preprocessing, evaluation, GridSearchCV |
 | **Pickle / Joblib** | Saving & loading trained models |
-| **Streamlit** | Interactive web app & deployment |
-
----
-
-## 🤖 ML Pipeline
-
-```
-Raw Dataset (13,611 records × 16 features)
-   │
-   ▼
-Data Cleaning & EDA
-   │  ├── Null value check
-   │  ├── Distribution plots
-   │  └── Correlation analysis
-   │
-   ▼
-Preprocessing
-   │  ├── Label Encoding (target classes)
-   │  └── Feature Scaling (StandardScaler)
-   │
-   ▼
-Train-Test Split (80:20)
-   │
-   ▼
-Model Training (5 Models)
-   │  ├── Logistic Regression
-   │  ├── Random Forest
-   │  ├── SVM
-   │  ├── KNN
-   │  └── XGBoost
-   │
-   ▼
-Model Evaluation
-   │  └── Accuracy | Precision | Recall | F1-Score | Confusion Matrix
-   │
-   ▼
-Best Model Saved with Pickle / Joblib
-   │
-   ▼
-Streamlit App Deployment ✅
-```
-
----
-
-## 📊 Models Trained
-
-| Model | Description |
-|---|---|
-| **Logistic Regression** | Baseline multi-class classifier |
-| **Random Forest** | Ensemble of decision trees |
-| **SVM** | Support Vector Machine with kernel trick |
-| **KNN** | K-Nearest Neighbours classifier |
-| **XGBoost** | Gradient boosted trees |
-
-> 📌 **TODO: Add your best model's accuracy score here — e.g., "Best Model: XGBoost — Accuracy: 92.X%"**
+| **Streamlit** | Interactive 3-tab web app & cloud deployment |
 
 ---
 
@@ -168,14 +241,14 @@ Streamlit App Deployment ✅
 ```
 Bean_Classification_Model/
 │
-├── app.py                        # Main Streamlit application
-├── bean_model.pkl                # Trained & saved ML model (TODO: confirm filename)
-├── Dry_Bean_Dataset.xlsx         # Dataset (TODO: confirm your filename)
+├── app.py                        # Main Streamlit application (3 tabs)
+├── bean_model.pkl                # Trained SVM model (TODO: confirm filename)
+├── Dry_Bean_Dataset.xlsx         # UCI dataset (TODO: confirm filename)
 ├── requirements.txt              # Python dependencies
 └── README.md                     # Project documentation
 ```
 
-> 📌 **TODO: Confirm your actual model file name and dataset file name**
+> 📌 **TODO: Confirm your actual `.pkl` model filename and dataset filename**
 
 ---
 
@@ -204,31 +277,21 @@ http://localhost:8501
 
 ---
 
-## 💡 Key Insights
-
-> 📌 **TODO: Fill in real findings from your EDA and model results — examples below to guide you:**
-
-- 🏆 **[Best Model]** achieved the highest accuracy of **X%** among all 5 models
-- 🫘 **Bombay** beans are the easiest to classify due to their distinctly large size
-- 📏 **Major Axis Length** and **Area** were among the most important features for classification
-- 🔁 **Dermason** and **Sira** varieties showed the most overlap, making them harder to distinguish
-- 📊 The dataset had a reasonably balanced class distribution across all 7 varieties
-
----
-
 ## 📸 Screenshots
 
-> 📌 **TODO: Add screenshots of your app**
->
-> 1. Create a `screenshots/` folder in your repo
-> 2. Take 3–4 screenshots from the live app
-> 3. Upload and link them below:
+| Landing Page | Input Form |
+|---|---|
+| ![Landing](screenshots/landing.png) | ![Input](screenshots/input.png) |
 
-```
-![App Input](screenshots/input.png)
-![Prediction Result](screenshots/result.png)
-![Model Comparison](screenshots/model_comparison.png)
-```
+| Model Comparison | Confusion Matrices |
+|---|---|
+| ![Models](screenshots/model_comparison.png) | ![CM](screenshots/confusion_matrices.png) |
+
+| Feature Importances | Bean Encyclopedia |
+|---|---|
+| ![Features](screenshots/feature_importance.png) | ![Encyclopedia](screenshots/encyclopedia.png) |
+
+> 📌 **TODO: Create a `screenshots/` folder in your repo and upload your app screenshots**
 
 ---
 
