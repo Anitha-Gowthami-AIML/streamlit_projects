@@ -137,7 +137,6 @@ User Profile (diet, goal, age, cuisines, allergens, calories)
 | **Scikit-learn** | K-Means clustering, cosine similarity, SVD |
 | **Pandas & NumPy** | Data manipulation and feature engineering |
 | **Matplotlib / Seaborn** | Nutritional visualisations |
-
 > 📌 **TODO: Confirm exact libraries from your `requirements.txt` and update if needed**
 
 ---
@@ -198,17 +197,16 @@ From the live app (Vegetarian · Maintenance · Eggs allergy filtered):
 
 | Landing Page | Sidebar & Profile |
 |---|---|
-| ![Hero](screenshots/hero.png) | ![Sidebar](screenshots/sidebar.png) |
+| ![Hero](1.png) | ![Sidebar](2.png) |
 
 | Recipe Cards — Breakfast | Recipe Cards — Lunch |
 |---|---|
-| ![Breakfast](screenshots/breakfast.png) | ![Lunch](screenshots/lunch.png) |
+| ![Breakfast](3.png) | ![Lunch](4.png) |
 
 | 7-Day Meal Plan | |
 |---|---|
-| ![Meal Plan](screenshots/meal_plan.png) | |
+| ![Meal Plan](5.png) | |
 
-> 📌 **TODO: Create a `screenshots/` folder in your repo, upload the 5 images you shared, and update filenames above**
 
 ---
 
@@ -217,10 +215,9 @@ From the live app (Vegetarian · Maintenance · Eggs allergy filtered):
 **Anitha Gowthami**
 AI & ML Student — IIT Guwahati – IOT Academy
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/TODO-your-linkedin-id)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/anitha-gowthami-134b1154/)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-black?logo=github)](https://github.com/Anitha-Gowthami-AIML)
 
-> 📌 **TODO: Replace `TODO-your-linkedin-id` with your actual LinkedIn profile URL**
 
 ---
 
