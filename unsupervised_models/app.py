@@ -1,5 +1,5 @@
 """
-ML Assignment Dashboard — Anime Recommendations & Student Clustering
+Unsupervised Machine Leaning model Dashboard — Anime Recommendations & Student Clustering
 Compatible with: Streamlit 1.56.0, pandas 3.x, scikit-learn 1.8, matplotlib 3.10
 """
 
@@ -38,7 +38,7 @@ except ImportError:
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="ML Assignment Dashboard",
+    page_title="Unsupervised Machine Learning Model Dashboard",
     page_icon="🌸",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -284,14 +284,14 @@ def run_clustering(_df_raw):
     dbscan_db  = davies_bouldin_score(X_pca[mask_db], best_db_labels[mask_db])
     dbscan_ch  = calinski_harabasz_score(X_pca[mask_db], best_db_labels[mask_db])
 
-    # ── t-SNE on a sample for 2-D visualisation ───────────────────────────────
+    # ── t-SNE: reduce sample to 1000 pts — fine visually, saves ~3× memory/time ─
     # sklearn 1.5+: parameter renamed from n_iter → max_iter
-    n_sample   = min(3000, len(X_pca))
+    n_sample   = min(1000, len(X_pca))          # was 3000; 1000 is plenty for viz
     idx_sample = np.random.choice(len(X_pca), n_sample, replace=False)
-    safe_perp  = min(40, n_sample - 1)
+    safe_perp  = min(30, n_sample - 1)          # perplexity must be < n_sample
     X_tsne     = TSNE(
         n_components=2, perplexity=safe_perp,
-        max_iter=500,          # was n_iter in sklearn < 1.5
+        max_iter=300,           # was 500; 300 is enough for cluster separation
         random_state=42
     ).fit_transform(X_pca[idx_sample])
 
@@ -314,39 +314,42 @@ def run_clustering(_df_raw):
 # ═════════════════════════════════════════════════════════════════════════════
 @st.cache_data(show_spinner=False)
 def run_anime_pipeline(_anime):
-    # Content-based: TF-IDF on genres → cosine similarity matrix
+    # ── Content-based: TF-IDF on genres ───────────────────────────────────────
+    # MEMORY FIX: Do NOT build the full 12294×12294 cosine similarity matrix
+    # (that is 1.2 GB and kills the free-tier container with an OOM / EOF).
+    # Instead we store only the sparse TF-IDF matrix (~KB) and compute
+    # cosine similarity ON DEMAND for a single query row (one vector vs all).
     anime_cb = _anime.dropna(subset=['genre']).copy().reset_index(drop=True)
     anime_cb['genre_clean'] = (anime_cb['genre']
                                .str.replace(', ', ' ')
                                .str.replace('-', ''))
-    tfidf_mat = TfidfVectorizer(
-        token_pattern=r"[a-zA-Z0-9]+"
-    ).fit_transform(anime_cb['genre_clean'])
-    cos_sim   = cosine_similarity(tfidf_mat, tfidf_mat)
-    # Build index: anime name → row position in anime_cb
+    tfidf_vec = TfidfVectorizer(token_pattern=r"[a-zA-Z0-9]+")
+    tfidf_mat = tfidf_vec.fit_transform(anime_cb['genre_clean'])
+    # tfidf_mat is a sparse CSR matrix — very small (~400 KB for 12k anime × 40 genres)
     anime_idx = pd.Series(anime_cb.index, index=anime_cb['name'])
 
-    # Collaborative SVD: build a synthetic user-item matrix from real ratings
+    # ── Collaborative SVD ─────────────────────────────────────────────────────
+    # MEMORY FIX: cap at 200 users × 300 items (was 300 × 500 = 150k floats → fine,
+    # but reducing further speeds up the sweep and stays well under 1 GB total).
     np.random.seed(42)
-    top_names    = _anime.nlargest(500, 'members')['name'].values
-    n_users      = 300
+    top_names    = _anime.nlargest(300, 'members')['name'].values   # was 500
+    n_users      = 200                                               # was 300
     n_items      = len(top_names)
     UI           = np.zeros((n_users, n_items))
     base_ratings = (_anime.set_index('name')
                     .loc[top_names, 'rating']
                     .fillna(7.0).values)
     for u in range(n_users):
-        n_rated = np.random.randint(10, 80)
+        n_rated = np.random.randint(10, 60)
         items   = np.random.choice(n_items, n_rated, replace=False)
         UI[u, items] = np.clip(
             base_ratings[items] + np.random.randn(n_rated) * 1.5, 1, 10)
 
-    # Sweep latent factors k; pick the one with lowest RMSE on observed entries
     rmse_dict = {}
-    for k in [5, 10, 20, 50]:
-        sv  = TruncatedSVD(n_components=k, random_state=42)
-        U_  = sv.fit_transform(UI)
-        R_  = np.dot(U_, sv.components_)
+    for k in [5, 10, 20]:          # dropped k=50 — saves time & memory
+        sv   = TruncatedSVD(n_components=k, random_state=42)
+        U_   = sv.fit_transform(UI)
+        R_   = np.dot(U_, sv.components_)
         mask = UI > 0
         rmse_dict[k] = round(
             float(np.sqrt(mean_squared_error(UI[mask], R_[mask]))), 4)
@@ -356,12 +359,13 @@ def run_anime_pipeline(_anime):
     R_final    = np.dot(svd_final.fit_transform(UI), svd_final.components_)
     rec_df     = pd.DataFrame(R_final, columns=top_names)
 
-    # Extra SVD for explained-variance chart (more components)
-    svd_ev = TruncatedSVD(n_components=min(50, n_items - 1), random_state=42)
+    svd_ev = TruncatedSVD(n_components=min(30, n_items - 1), random_state=42)
     svd_ev.fit(UI)
 
     return dict(
-        anime_cb=anime_cb, cos_sim=cos_sim, anime_idx=anime_idx,
+        anime_cb=anime_cb,
+        tfidf_mat=tfidf_mat,    # sparse matrix — tiny; used for on-demand sim
+        anime_idx=anime_idx,
         top_names=top_names, UI=UI, rec_df=rec_df,
         svd_final=svd_final, rmse_dict=rmse_dict, best_k_svd=best_k_svd,
         svd_ev=svd_ev,
@@ -377,7 +381,7 @@ st.markdown("""
   <h1 style="font-size:2.4rem;font-weight:900;
              background:linear-gradient(90deg,#e75480,#c9a0dc,#6a9fb5);
              -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0;">
-    ML Assignment Dashboard
+    Unsupervised Machine Learning Model Dashboard
   </h1>
   <p style="color:#8B3A62;font-size:1.05rem;margin-top:6px;">
     Student Clustering &nbsp;|&nbsp; Anime Recommendation System
@@ -386,8 +390,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab1, tab2 = st.tabs(["🎓 Part B — Student Clustering",
-                       "🎌 Part C — Anime Recommendations"])
+tab1, tab2 = st.tabs(["🎓 Student Clustering",
+                       "🎌 Anime Recommendations"])
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -864,8 +868,12 @@ with tab2:
             idx = ap['anime_idx'][chosen]
             if isinstance(idx, pd.Series):
                 idx = int(idx.iloc[0])
-            sims = sorted(enumerate(ap['cos_sim'][idx]),
-                          key=lambda x: x[1], reverse=True)[1:n_cb+1]
+            # On-demand cosine similarity: compute ONE row vs all (no 1.2 GB matrix)
+            query_vec  = ap['tfidf_mat'][idx]           # sparse row vector
+            sim_scores = cosine_similarity(query_vec, ap['tfidf_mat']).flatten()
+            sim_scores[idx] = -1                        # exclude the query itself
+            top_idx    = np.argsort(sim_scores)[::-1][:n_cb]
+            sims       = [(i, sim_scores[i]) for i in top_idx]
             rec  = ap['anime_cb'].iloc[[i[0] for i in sims]][
                 ['name','genre','rating']].copy()
             rec['similarity'] = [round(s[1], 4) for s in sims]
@@ -885,7 +893,7 @@ with tab2:
 
     with col_svd:
         st.markdown("#### 🤖 Collaborative SVD (User-Based)")
-        user_id = st.slider("User ID (0–299):", 0, 299, 42, key="svd_uid")
+        user_id = st.slider("User ID (0–199):", 0, 199, 42, key="svd_uid")
         n_svd   = st.slider("# Recommendations:", 5, 20, 10, key="svd_n")
 
         if st.button("🌸 Get SVD Recs", key="btn_svd"):
