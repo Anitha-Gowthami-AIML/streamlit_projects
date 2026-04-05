@@ -39,7 +39,7 @@ except ImportError:
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="ML Assignment Dashboard",
+    page_title="Unsupervise ML Dashboard",
     page_icon="🌸",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -407,7 +407,7 @@ with tab1:
     #    df_raw = load_students()
     #    clust  = run_clustering(df_raw)
 
-    #df_raw = load_students()
+    df_raw = load_students()
 
     if st.button("🚀 Run Clustering Pipeline"):
         with st.spinner("Running clustering..."):
