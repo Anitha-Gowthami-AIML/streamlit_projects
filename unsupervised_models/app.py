@@ -133,7 +133,7 @@ def st_fig(fig):
     buf = io.BytesIO()
     fig.savefig(buf, format='png', dpi=110, bbox_inches='tight', facecolor=FIG_BG)
     buf.seek(0)
-    st.image(buf, use_column_width=True)
+    st.image(buf, use_container_width=True)
     plt.close(fig)
 
 
@@ -288,11 +288,12 @@ def run_clustering(_df_raw):
     dbscan_db  = davies_bouldin_score(X_pca[mask_db], best_db_labels[mask_db])
     dbscan_ch  = calinski_harabasz_score(X_pca[mask_db], best_db_labels[mask_db])
 
-    from sklearn.manifold import TSNE
+    # sklearn ≥ 1.5 renamed n_iter → max_iter; perplexity must be < n_sample
     n_sample   = min(3000, len(X_pca))
     idx_sample = np.random.choice(len(X_pca), n_sample, replace=False)
-    X_tsne     = TSNE(n_components=2, perplexity=40, random_state=42,
-                      n_iter=500).fit_transform(X_pca[idx_sample])
+    safe_perplexity = min(40, n_sample - 1)
+    X_tsne     = TSNE(n_components=2, perplexity=safe_perplexity, random_state=42,
+                      max_iter=500).fit_transform(X_pca[idx_sample])
 
     return dict(
         X_pca=X_pca, X_tsne=X_tsne, idx_sample=idx_sample,
@@ -621,7 +622,8 @@ with tab1:
 
     X_tsne     = clust['X_tsne']
     idx_sample = clust['idx_sample']
-    cmap_p     = plt.cm.get_cmap('Pastel1', 10)
+    # matplotlib 3.7+: use plt.colormaps instead of the old plt.cm accessor
+    cmap_p     = plt.colormaps.get_cmap('Pastel1').resampled(10)
 
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
     fig.patch.set_facecolor(FIG_BG)
