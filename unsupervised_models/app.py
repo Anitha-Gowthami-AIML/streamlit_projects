@@ -3,10 +3,6 @@ Assignment Dashboard — Anime Recommendations & Student Clustering
 Streamlit app with two tabs, pastel/peach gradient theme, word clouds, and all plots.
 """
 
-import os
-os.environ['LOKY_MAX_CPU_COUNT'] = '1'
-os.environ['JOBLIB_START_METHOD'] = 'spawn'
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -38,7 +34,7 @@ except ImportError:
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="UnSupervised ML Model Comparison Dashboard",
+    page_title="ML Assignment Dashboard",
     page_icon="🌸",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -48,11 +44,9 @@ st.set_page_config(
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #eef2ff 0%, #dbeafe 40%, #e0e7ff 70%, #f5f3ff 100%);
+    background: linear-gradient(135deg, #fff0f3 0%, #ffe4e1 30%, #ffd6cc 60%, #fff5f0 100%);
     background-attachment: fixed;
 }
-
-
 .stApp::before {
     content: "";
     position: fixed;
@@ -139,7 +133,7 @@ def st_fig(fig):
     buf = io.BytesIO()
     fig.savefig(buf, format='png', dpi=110, bbox_inches='tight', facecolor=FIG_BG)
     buf.seek(0)
-    st.image(buf, use_container_width=True)
+    st.image(buf, use_column_width=True)
     plt.close(fig)
 
 
@@ -194,11 +188,19 @@ def load_students():
 # ─────────────────────────────────────────────────────────────────────────────
 @st.cache_data(show_spinner=False)
 def run_clustering(_df_raw):
+    # Convert all columns to plain Python object dtype immediately so that
+    # ArrowDtype-backed string columns (pandas 2.x + PyArrow backend on
+    # Streamlit Cloud) don't cause re.sub / lambda errors inside .apply().
     df = _df_raw.drop_duplicates().copy()
+    df = df.astype({col: 'object' for col in df.select_dtypes(include='string').columns},
+                   errors='ignore')
+
+    # Use pandas vectorised .str accessor (ArrowDtype-safe) instead of .apply+lambda
     df['age'] = pd.to_numeric(
-        df['age'].astype(str).apply(lambda x: re.sub(r'[A-Za-z]', '', x)), errors='coerce')
+        df['age'].astype(str).str.replace(r'[A-Za-z]', '', regex=True).str.strip(),
+        errors='coerce')
     df['age'] = df['age'].clip(13, 22)
-    df['gender'] = df['gender'].map({'M': 1, 'F': 0}).fillna(-1)
+    df['gender'] = df['gender'].astype(object).map({'M': 1, 'F': 0}).fillna(-1)
     num_cols = df.select_dtypes(include='number').columns.tolist()
     for col in num_cols:
         df[col] = df[col].fillna(df[col].median())
@@ -361,7 +363,7 @@ st.markdown("""
   <h1 style="font-size:2.4rem; font-weight:900;
              background:linear-gradient(90deg,#e75480,#c9a0dc,#6a9fb5);
              -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin:0;">
-    UnSupervised ML Model Comparison Dashboard
+    ML Assignment Dashboard
   </h1>
   <p style="color:#8B3A62; font-size:1.05rem; margin-top:6px;">
     Student Clustering &nbsp;|&nbsp; Anime Recommendation System
@@ -370,12 +372,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab1, tab2 = st.tabs(["🎓 Student Profile Clustering", "🎌 Anime Recommendations"])
+tab1, tab2 = st.tabs(["🎓 Part B — Student Clustering", "🎌 Part C — Anime Recommendations"])
 
 
 # ═════════════════════════════════════════════════════════════════════════════
 # TAB 1 — STUDENT CLUSTERING
-# ══════════════════════════════════
+# ═════════════════════════════════════════════════════════════════════════════
 with tab1:
     st.markdown('<p class="section-title">Student Social Network Profile Clustering</p>',
                 unsafe_allow_html=True)
@@ -433,7 +435,7 @@ with tab1:
     axes[0,1].tick_params(axis='x', rotation=0)
 
     age_c = pd.to_numeric(
-        df_viz['age'].astype(str).apply(lambda x: re.sub(r'[A-Za-z]','',x)),
+        df_viz['age'].astype(str).str.replace(r'[A-Za-z]', '', regex=True).str.strip(),
         errors='coerce').dropna()
     age_c = age_c[(age_c>=13) & (age_c<=22)]
     axes[0,2].hist(age_c, bins=18, color='#FFDAC1', edgecolor='white', lw=1.2)
