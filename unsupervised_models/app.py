@@ -29,8 +29,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.cluster.hierarchy import dendrogram, linkage
 
 warnings.filterwarnings("ignore")
-import sys
- 
+
 try:
     from kneed import KneeLocator
     KNEED_OK = True
@@ -39,7 +38,7 @@ except ImportError:
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Unsupervise ML Dashboard",
+    page_title="ML Assignment Dashboard",
     page_icon="🌸",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -153,7 +152,7 @@ def find_file(name):
 
 
 # ── Data loaders (cached) ─────────────────────────────────────────────────────
-@st.cache_data(show_spinner=False, ttl=3600)
+@st.cache_data(show_spinner=False)
 def load_anime():
     path = find_file('anime.csv')
     if path is None:
@@ -164,7 +163,7 @@ def load_anime():
     return df
 
 
-@st.cache_data(show_spinner=False, ttl=3600)
+@st.cache_data(show_spinner=False)
 def load_students():
     path = find_file('03_Clustering_Marketing.csv')
     if path is None:
@@ -176,7 +175,7 @@ def load_students():
 # ═════════════════════════════════════════════════════════════════════════════
 # CLUSTERING PIPELINE
 # ═════════════════════════════════════════════════════════════════════════════
-@st.cache_data(show_spinner=False, ttl=3600)
+@st.cache_data(show_spinner=False)
 def run_clustering(_df_raw):
     df = _df_raw.drop_duplicates().copy()
 
@@ -266,8 +265,8 @@ def run_clustering(_df_raw):
     eps_cands = np.linspace(max(0.1, eps_knee * 0.5), eps_knee * 2.0, 8).round(3)
 
     best_sil_db, best_db_labels = -1, None
-    for eps in eps_cands[:4]:   # reduce search
-        for ms in [5, 10]:
+    for eps in eps_cands:
+        for ms in [3, 5, 7, 10]:
             lbl  = DBSCAN(eps=eps, min_samples=ms).fit_predict(X_pca)
             n_cl = len(set(lbl)) - (1 if -1 in lbl else 0)
             mask = lbl != -1
@@ -287,7 +286,7 @@ def run_clustering(_df_raw):
 
     # ── t-SNE on a sample for 2-D visualisation ───────────────────────────────
     # sklearn 1.5+: parameter renamed from n_iter → max_iter
-    n_sample   = min(1000, len(X_pca))
+    n_sample   = min(3000, len(X_pca))
     idx_sample = np.random.choice(len(X_pca), n_sample, replace=False)
     safe_perp  = min(40, n_sample - 1)
     X_tsne     = TSNE(
@@ -313,7 +312,7 @@ def run_clustering(_df_raw):
 # ═════════════════════════════════════════════════════════════════════════════
 # ANIME PIPELINE
 # ═════════════════════════════════════════════════════════════════════════════
-@st.cache_data(show_spinner=False, ttl=3600)
+@st.cache_data(show_spinner=False)
 def run_anime_pipeline(_anime):
     # Content-based: TF-IDF on genres → cosine similarity matrix
     anime_cb = _anime.dropna(subset=['genre']).copy().reset_index(drop=True)
@@ -403,22 +402,9 @@ with tab1:
     PCA reduction, measuring quality with Silhouette, Davies-Bouldin, and Calinski-Harabasz.
     </div>""", unsafe_allow_html=True)
 
-    #with st.spinner("🌸 Running clustering pipeline — ~60 s the first time…"):
-    #    df_raw = load_students()
-    #    clust  = run_clustering(df_raw)
-
-    df_raw = load_students()
-
-    if st.button("🚀 Run Clustering Pipeline"):
-        with st.spinner("Running clustering..."):
-            clust = run_clustering(df_raw)
-            st.session_state['clust'] = clust
-    
-    clust = st.session_state.get('clust', None)
-    
-    if clust is None:
-        st.warning("Click 'Run Clustering Pipeline' to start.")
-        st.stop()
+    with st.spinner("🌸 Running clustering pipeline — ~60 s the first time…"):
+        df_raw = load_students()
+        clust  = run_clustering(df_raw)
 
     # ── Metric cards ──────────────────────────────────────────────────────────
     st.markdown("#### 📊 Model Performance")
