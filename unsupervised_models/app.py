@@ -134,7 +134,7 @@ def st_fig(fig):
     buf = io.BytesIO()
     fig.savefig(buf, format='png', dpi=110, bbox_inches='tight', facecolor=FIG_BG)
     buf.seek(0)
-    st.image(buf, use_container_width=True)
+    st.image(buf, width='stretch')
     plt.close(fig)
 
 
@@ -596,7 +596,7 @@ with tab1:
         'Davies-Bouldin ↓'   : [round(clust['km_db'],4),  round(clust['hier_db'],4),   round(clust['dbscan_db'],4)],
         'Calinski-Harabasz ↑': [round(clust['km_ch'],1),   round(clust['hier_ch'],1),  round(clust['dbscan_ch'],1)],
     })
-    st.dataframe(results_df.set_index('Method'), use_container_width=True)
+    st.dataframe(results_df.set_index('Method'), width='stretch')
 
     fig, ax = plt.subplots(figsize=(9, 4))
     fig.patch.set_facecolor(FIG_BG)
@@ -837,7 +837,7 @@ with tab2:
             rec  = ap['anime_cb'].iloc[[i[0] for i in sims]][['name','genre','rating']].copy()
             rec['similarity'] = [round(s[1], 4) for s in sims]
             rec = rec.reset_index(drop=True)
-            st.dataframe(rec, use_container_width=True)
+            st.dataframe(rec, width='stretch')
 
             fig, ax = plt.subplots(figsize=(8, 4))
             fig.patch.set_facecolor(FIG_BG)
@@ -862,7 +862,7 @@ with tab2:
             top_n = cands.nlargest(n_svd).reset_index()
             top_n.columns = ['Anime', 'Predicted Rating']
             top_n['Predicted Rating'] = top_n['Predicted Rating'].round(2)
-            st.dataframe(top_n, use_container_width=True)
+            st.dataframe(top_n, width='stretch')
 
             fig, ax = plt.subplots(figsize=(8, 4))
             fig.patch.set_facecolor(FIG_BG)
