@@ -1,5 +1,5 @@
 """
-Unsupervised Machine Leaning model Dashboard — Anime Recommendations & Student Clustering
+ML Assignment Dashboard — Anime Recommendations & Student Clustering
 Compatible with: Streamlit 1.56.0, pandas 3.x, scikit-learn 1.8, matplotlib 3.10
 """
 
@@ -38,7 +38,7 @@ except ImportError:
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Unsupervised Machine Learning Model Dashboard",
+    page_title="ML Assignment Dashboard",
     page_icon="🌸",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -381,7 +381,7 @@ st.markdown("""
   <h1 style="font-size:2.4rem;font-weight:900;
              background:linear-gradient(90deg,#e75480,#c9a0dc,#6a9fb5);
              -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin:0;">
-    Unsupervised Machine Learning Model Dashboard
+    ML Assignment Dashboard
   </h1>
   <p style="color:#8B3A62;font-size:1.05rem;margin-top:6px;">
     Student Clustering &nbsp;|&nbsp; Anime Recommendation System
@@ -390,8 +390,8 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-tab1, tab2 = st.tabs(["🎓 Student Clustering",
-                       "🎌 Anime Recommendations"])
+tab1, tab2 = st.tabs(["🎓 Part B — Student Clustering",
+                       "🎌 Part C — Anime Recommendations"])
 
 
 # ═════════════════════════════════════════════════════════════════════════════
