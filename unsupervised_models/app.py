@@ -30,13 +30,7 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 
 warnings.filterwarnings("ignore")
 import sys
-
-try:
-    # your code
-except Exception as e:
-    st.error(f"App crashed: {e}")
-    st.stop()
-  
+ 
 try:
     from kneed import KneeLocator
     KNEED_OK = True
