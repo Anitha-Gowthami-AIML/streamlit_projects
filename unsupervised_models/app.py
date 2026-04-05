@@ -23,6 +23,7 @@ from sklearn.metrics import (silhouette_score, davies_bouldin_score,
                              calinski_harabasz_score, mean_squared_error)
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.manifold import TSNE
 from scipy.cluster.hierarchy import dendrogram, linkage
 from wordcloud import WordCloud
 
