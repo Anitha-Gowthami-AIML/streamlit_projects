@@ -38,7 +38,7 @@ except ImportError:
 
 # ── Page config ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="ML Assignment Dashboard",
+    page_title="Unsupervised models Dashboard",
     page_icon="🌸",
     layout="wide",
     initial_sidebar_state="collapsed",
